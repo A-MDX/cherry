@@ -21,6 +21,7 @@
 	<modules>
 		<module>eureka</module>
 		<module>zuul</module>
+		<module>javaline</module>
 	</modules>
 
 	<properties>

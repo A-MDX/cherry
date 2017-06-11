@@ -1,4 +1,8 @@
-
+server:
+  port: 8001
+spring:
+  application:
+    name: javaline-service
 eurekalogin:
   username: madx
   password: 1234
@@ -7,14 +11,4 @@ eureka:
   client:
     service-url: 
       defaultZone: http://${eurekalogin.username}:${eurekalogin.password}@localhost:8761/eureka/
-server:
-  port: 80
-spring:
-  application:
-    name: zuul
-zuul:
-  routes: 
-    api1:
-      path: /api/**
-      serviceId: javaline-service
   
