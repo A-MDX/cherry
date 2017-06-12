@@ -1,0 +1,15 @@
+server:
+  port: 7001
+---
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://gitshell.com/madx/config.git
+          username: madx
+          password: 9295mdx
+          search-paths: cherry/{application}/
+

@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: javaline
+  cloud:
+    config:
+      uri: http://localhost:7001
+
+
+
