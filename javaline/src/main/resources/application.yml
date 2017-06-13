@@ -4,8 +4,8 @@
 #  application:
 #    name: javaline-service
 #eurekalogin:
-#  username: madx
-#  password: 1234
+#  username: username
+#  password: password
 #
 #eureka:
 #  client:

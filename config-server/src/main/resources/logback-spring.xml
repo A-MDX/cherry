@@ -4,10 +4,10 @@
     <logger name="org.springframework.web" level="DEBUG"/>
     
     <appender name="dailyRollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>/home/madx/project/log/zuul/zuul.log</File>
+        <File>/home/madx/project/log/config/config.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <FileNamePattern>zuul.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>config.%d{yyyy-MM-dd}.log</FileNamePattern>
             <!-- keep 30 days' worth of history -->
             <maxHistory>30</maxHistory>
         </rollingPolicy>
@@ -17,7 +17,7 @@
         </encoder>
     </appender>
     
-    <root level="INFO">
+    <root>
         <appender-ref ref="dailyRollingFileAppender" />
     </root>
 
