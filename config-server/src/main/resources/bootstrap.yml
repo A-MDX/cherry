@@ -9,7 +9,11 @@ spring:
       server:
         git:
           uri: https://gitshell.com/madx/config.git
-          username: username
-          password: password
+          username: madx
+          password: 9295mdx
           search-paths: cherry/{application}/
 
+---
+logging:
+  config: classpath:logback-spring.xml 
+  
