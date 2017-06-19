@@ -9,8 +9,8 @@ spring:
       server:
         git:
           uri: https://gitshell.com/madx/config.git
-          username: madx
-          password: 9295mdx
+          username: xxx
+          password: xxx
           search-paths: cherry/{application}/
 
 ---

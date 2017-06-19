@@ -29,8 +29,8 @@ public class Result {
     public String toJson(){
         BasicDBObject json = new BasicDBObject();
         json.append("code", code);
-        json.append("data", data);
         json.append("msg", msg);
+        json.append("data", data);
         return json.toJson(); 
     }
 
