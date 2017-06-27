@@ -1,4 +1,4 @@
-package com.madx.cherry.common;
+package com.madx.cherry.core.common;
 
 /**
  * 统一数据模块。

@@ -1,6 +1,7 @@
 package com.madx.cherry.javaline.dao;
 
-import madx.entity.EatMemuPO;
+
+import com.madx.cherry.javaline.bean.EatMemuPO;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

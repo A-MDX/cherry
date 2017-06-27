@@ -1,6 +1,6 @@
-package com.madx.cherry.common.dao;
+package com.madx.cherry.core.common.dao;
 
-import com.madx.cherry.common.entity.SysUserPO;
+import com.madx.cherry.core.common.entity.SysUserPO;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
