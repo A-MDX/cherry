@@ -30,12 +30,7 @@ spring:
     show-sql: true
   data:
     mongodb:
-      host: 39.108.79.64
-      password: 9295
-      username: madx
-      port: 9717
-      database: test
-      authentication-database: test
+      uri: mongodb://madx:9295@39.108.79.64:9717/test
       
       
   redis:

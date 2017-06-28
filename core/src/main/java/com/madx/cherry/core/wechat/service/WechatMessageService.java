@@ -4,6 +4,7 @@ package com.madx.cherry.core.wechat.service;
 import com.madx.cherry.core.common.CommonCode;
 import com.madx.cherry.core.common.dao.SysUserDao;
 import com.madx.cherry.core.common.entity.SysUserPO;
+import com.madx.cherry.core.common.util.Util;
 import com.madx.cherry.core.wechat.bean.MongoDataPO;
 import com.madx.cherry.core.wechat.bean.WechatMsgPO;
 import com.madx.cherry.core.wechat.bean.XmlMsg;
@@ -12,6 +13,7 @@ import com.madx.cherry.core.wechat.common.WechatUtil;
 import com.madx.cherry.core.wechat.dao.MongoDataDao;
 import com.madx.cherry.core.wechat.dao.WechatMsgDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Transient;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -27,12 +29,13 @@ public class WechatMessageService {
     @Autowired
     private SysUserDao sysUserDao;
     @Autowired
-    private MongoDataDao mongoDataDaol;
+    private MongoDataDao mongoDataDao;
     
     public String analysisText(XmlMsg msg) {
         WechatMsgPO msgPO = initPO(msg);
         msgPO.setType(CommonCode.WECHAT_MSG_TYPE_TEXT);
         msgPO.setData(msg.getContent());
+        msgPO.setMsgType("text");
         wechatMsgDao.save(msgPO);
         
         if (msg.getContent().equals("hehe") ){
@@ -41,6 +44,32 @@ public class WechatMessageService {
         return "success";
     }
 
+    @Transient
+    public String analysisImage(XmlMsg msg) {
+
+        WechatMsgPO msgPO = initPO(msg);
+        msgPO.setType(CommonCode.WECHAT_MSG_TYPE_IMAGE);
+        msgPO.setData(msg.getPicUrl());
+        msgPO.setMsgType("image");
+        msgPO = wechatMsgDao.save(msgPO);
+
+        // init mongo bean
+        MongoDataPO mongoDataPO = new MongoDataPO();
+        mongoDataPO.setCreationTime(new Date());
+        mongoDataPO.setCreator(msgPO.getUser());
+        mongoDataPO.setDataId(msg.getMediaId());
+        mongoDataPO.setType(msg.getMsgType());
+        mongoDataPO.setStatus(CommonCode.VALID_TRUE);
+        mongoDataPO.setData(Util.downloadPic(msg.getPicUrl()));
+        mongoDataPO.setMysqId(msgPO.getId());
+        mongoDataPO.setName("image_"+msg.getMediaId());
+
+        mongoDataPO = mongoDataDao.save(mongoDataPO);
+
+        System.out.println(mongoDataPO.toString());
+
+        return "success";
+    }
 
     public String analysisDataMsg(XmlMsg msg) {
         WechatMsgPO msgPO = initPO(msg);
@@ -79,5 +108,6 @@ public class WechatMessageService {
         
         return msgPO;
     }
+
 
 }

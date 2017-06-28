@@ -19,9 +19,10 @@ public class WechatService {
             case "text":
                 return messageService.analysisText(msg);
             case "image":
-            case "voice":
-            case "video":
-                return messageService.analysisDataMsg(msg);
+                return messageService.analysisImage(msg);
+//            case "voice":
+//            case "video":
+//                return messageService.analysisDataMsg(msg);
 //            case "link":
 //                return messageService.analysisLink(msg);
 //            case "location":

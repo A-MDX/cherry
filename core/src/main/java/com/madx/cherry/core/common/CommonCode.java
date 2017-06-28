@@ -28,6 +28,7 @@ public class CommonCode {
     public static final int WECHAT_MSG_TYPE_DATA = 10041002;
     public static final int WECHAT_MSG_TYPE_LINK = 10041003;
     public static final int WECHAT_MSG_TYPE_LOCATION = 10041004;
+    public static final int WECHAT_MSG_TYPE_IMAGE = 10041005;
     
 
 }

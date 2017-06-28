@@ -21,6 +21,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name="type")
 	private Integer type;
 
+	@Column(name = "msg_type")
+	private String msgType;
+	
 	@Column(name="data")
 	private String data;
 
@@ -38,6 +41,14 @@ private static final long serialVersionUID = 1L;
 
 	@Column(name="modify_time")
 	private Date modifyTime;
+
+	public String getMsgType() {
+		return msgType;
+	}
+
+	public void setMsgType(String msgType) {
+		this.msgType = msgType;
+	}
 
 	public void setId(Long id){
     	this.id = id;

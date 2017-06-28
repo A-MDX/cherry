@@ -2,13 +2,14 @@ package com.madx.cherry.core.wechat.bean;
 
 import org.springframework.data.annotation.Id;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 
 /**
  * Created by A-mdx on 2017/6/26.
  */
-public class MongoDataPO {
+public class MongoDataPO implements Serializable{
     
     @Id
     private String id;
@@ -19,7 +20,16 @@ public class MongoDataPO {
     private Date creationTime;
     private String creator;
     private Integer status;
-    private byte[] data; 
+    private Long mysqId;
+    private byte[] data;
+
+    public Long getMysqId() {
+        return mysqId;
+    }
+
+    public void setMysqId(Long mysqId) {
+        this.mysqId = mysqId;
+    }
 
     public String getId() {
         return id;
@@ -95,6 +105,7 @@ public class MongoDataPO {
                 ", creationTime=" + creationTime +
                 ", creator='" + creator + '\'' +
                 ", status=" + status +
+                ", mysqId=" + mysqId +
                 ", data=" + Arrays.toString(data) +
                 '}';
     }
