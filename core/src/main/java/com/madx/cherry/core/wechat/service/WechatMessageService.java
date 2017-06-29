@@ -4,7 +4,6 @@ package com.madx.cherry.core.wechat.service;
 import com.madx.cherry.core.common.CommonCode;
 import com.madx.cherry.core.common.dao.SysUserDao;
 import com.madx.cherry.core.common.entity.SysUserPO;
-import com.madx.cherry.core.common.util.Util;
 import com.madx.cherry.core.wechat.bean.MongoDataPO;
 import com.madx.cherry.core.wechat.bean.WechatMsgPO;
 import com.madx.cherry.core.wechat.bean.XmlMsg;
@@ -75,17 +74,35 @@ public class WechatMessageService {
         mongoDataPO.setCreator(msgPO.getUser());
         mongoDataPO.setDataId(msg.getMediaId());
         mongoDataPO.setType("image");
-        mongoDataPO.setPath(fileSavePath + "image/"+ldtime.format(DateTimeFormatter.ofPattern("yyyyMM")));
+        mongoDataPO.setPath(fileSavePath + "/image/"+ldtime.format(DateTimeFormatter.ofPattern("yyyyMM")));
         mongoDataPO.setMysqId(msgPO.getId());
-        mongoDataPO.setName(ldtime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_hh:mm:ss"))+"+"+Math.random()); // todo...
+        mongoDataPO.setName(ldtime.format(DateTimeFormatter.ofPattern("dd-HH:mm:ss.SSS"))+"+"+genRandomNum()+".jpg"); // todo...
+        mongoDataPO.setDataUrl(msg.getPicUrl());
 
         mongoDataPO.setStatus(CommonCode.VALID_TRUE);
+        mongoDataPO.setSaveLocal(false);
+        
 
         mongoDataPO = mongoDataDao.save(mongoDataPO);
 
         System.out.println(mongoDataPO.toString());
 
         return "success";
+    }
+
+    /**
+     * 随机给个int 数字 100以内的
+     * @return
+     */
+    private static int genRandomNum(){
+        double temp1 = Math.random()*100;
+        return (int) temp1;
+    }
+
+    public static void main(String[] args) {
+        LocalDateTime ldtime = LocalDateTime.now();
+        String time = ldtime.format(DateTimeFormatter.ofPattern("dd-HH:mm:ss.SSS"));
+        System.out.println(time);
     }
 
     public String analysisDataMsg(XmlMsg msg) {

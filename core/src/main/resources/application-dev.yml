@@ -40,7 +40,7 @@ spring:
     port: 6379
 
 ---
-
+# 最后的不加 斜杠
 file:
   save:
-   path: /User/a-mdx/Desktop/
+   path: C:\Users\A-mdx\Desktop

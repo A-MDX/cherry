@@ -38,3 +38,8 @@ spring:
     host: localhost
     port: 9379
 
+---
+# 最后的不加 斜杠
+file:
+  save:
+   path: /User/a-mdx/Desktop

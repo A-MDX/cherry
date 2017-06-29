@@ -1,14 +1,15 @@
 package com.madx.cherry.core.wechat.bean;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Date;
 
 /**
  * Created by A-mdx on 2017/6/26.
  */
+@Document(collection = "MongoDataPO")
 public class MongoDataPO implements Serializable{
     
     @Id
@@ -24,6 +25,23 @@ public class MongoDataPO implements Serializable{
     private String path;  //  要保存到本地的地址
     private Boolean saveLocal;  // 是否已经保存到本地了
     private Date modiftTime;
+    private String dataUrl;
+
+    public Date getModiftTime() {
+        return modiftTime;
+    }
+
+    public void setModiftTime(Date modiftTime) {
+        this.modiftTime = modiftTime;
+    }
+
+    public String getDataUrl() {
+        return dataUrl;
+    }
+
+    public void setDataUrl(String dataUrl) {
+        this.dataUrl = dataUrl;
+    }
 
     public String getPath() {
         return path;
