@@ -13,9 +13,12 @@ import com.madx.cherry.core.wechat.common.WechatUtil;
 import com.madx.cherry.core.wechat.dao.MongoDataDao;
 import com.madx.cherry.core.wechat.dao.WechatMsgDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.annotation.Transient;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -30,6 +33,11 @@ public class WechatMessageService {
     private SysUserDao sysUserDao;
     @Autowired
     private MongoDataDao mongoDataDao;
+
+    @Value("${file.save.path}")
+    private String fileSavePath;
+
+
     
     public String analysisText(XmlMsg msg) {
         WechatMsgPO msgPO = initPO(msg);
@@ -39,11 +47,16 @@ public class WechatMessageService {
         wechatMsgDao.save(msgPO);
         
         if (msg.getContent().equals("hehe") ){
-            throw new WechatException("hehe 个篮子。", msg);
+            throw new WechatException("呵呵 个篮子。", msg);
         }
         return "success";
     }
 
+    /**
+     * 准备 mysql 一个， mongo一份， 然后存到 本机中
+     * @param msg
+     * @return
+     */
     @Transient
     public String analysisImage(XmlMsg msg) {
 
@@ -55,14 +68,18 @@ public class WechatMessageService {
 
         // init mongo bean
         MongoDataPO mongoDataPO = new MongoDataPO();
+
+        LocalDateTime ldtime = LocalDateTime.now();
+
         mongoDataPO.setCreationTime(new Date());
         mongoDataPO.setCreator(msgPO.getUser());
         mongoDataPO.setDataId(msg.getMediaId());
-        mongoDataPO.setType(msg.getMsgType());
-        mongoDataPO.setStatus(CommonCode.VALID_TRUE);
-        mongoDataPO.setData(Util.downloadPic(msg.getPicUrl()));
+        mongoDataPO.setType("image");
+        mongoDataPO.setPath(fileSavePath + "image/"+ldtime.format(DateTimeFormatter.ofPattern("yyyyMM")));
         mongoDataPO.setMysqId(msgPO.getId());
-        mongoDataPO.setName("image_"+msg.getMediaId());
+        mongoDataPO.setName(ldtime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_hh:mm:ss"))+"+"+Math.random()); // todo...
+
+        mongoDataPO.setStatus(CommonCode.VALID_TRUE);
 
         mongoDataPO = mongoDataDao.save(mongoDataPO);
 

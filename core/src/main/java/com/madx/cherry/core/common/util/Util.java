@@ -1,11 +1,12 @@
 package com.madx.cherry.core.common.util;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.util.Optional;
 
 /**
  * Created by A-mdx on 2017/6/28.
@@ -22,8 +23,8 @@ public class Util {
             InputStream is = connection.getInputStream();
             BufferedInputStream bif = new BufferedInputStream(is);
             int rest = bif.read(data);
-            if (rest > -1){
-                return null;
+            if (rest >= -1){
+                return data;
             }
             return data;
         } catch (MalformedURLException e) {
@@ -33,5 +34,18 @@ public class Util {
         }
         return null;
     }
+
+
+    public void test1() throws IOException {
+        File file = new File("/Users/a-mdx/Desktop/ok.jpg");
+        FileInputStream in = new FileInputStream(file);
+        FileChannel channel = in.getChannel();
+        ByteBuffer byteBuffer = ByteBuffer.allocate((int) channel.size());
+        while (channel.read(byteBuffer) > 0){
+
+        }
+        byteBuffer.array();
+    }
+
     
 }

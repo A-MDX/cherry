@@ -14,14 +14,32 @@ public class MongoDataPO implements Serializable{
     @Id
     private String id;
     
-    private String name;
-    private String type;
-    private String dataId;
+    private String name;  // 名称，与保存在本地里的文件有关联。
+    private String type;  // 类型
+    private String dataId;  // 对应 微信 media id
     private Date creationTime;
     private String creator;
-    private Integer status;
-    private Long mysqId;
-    private byte[] data;
+    private Integer status; // 状态码
+    private Long mysqId;   // 保存至 mysql中的 id
+    private String path;  //  要保存到本地的地址
+    private Boolean saveLocal;  // 是否已经保存到本地了
+    private Date modiftTime;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public Boolean getSaveLocal() {
+        return saveLocal;
+    }
+
+    public void setSaveLocal(Boolean saveLocal) {
+        this.saveLocal = saveLocal;
+    }
 
     public Long getMysqId() {
         return mysqId;
@@ -63,14 +81,6 @@ public class MongoDataPO implements Serializable{
         this.dataId = dataId;
     }
 
-    public byte[] getData() {
-        return data;
-    }
-
-    public void setData(byte[] data) {
-        this.data = data;
-    }
-
     public Date getCreationTime() {
         return creationTime;
     }
@@ -106,7 +116,8 @@ public class MongoDataPO implements Serializable{
                 ", creator='" + creator + '\'' +
                 ", status=" + status +
                 ", mysqId=" + mysqId +
-                ", data=" + Arrays.toString(data) +
+                ", path='" + path + '\'' +
+                ", saveLocal=" + saveLocal +
                 '}';
     }
 }
