@@ -70,4 +70,14 @@ public class WechatJob {
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
 	at java.lang.Thread.run(Thread.java:745)
      */
+
+    public static void main(String... args){
+        String path = "/Users/a-mdx/Desktop/image/201706";
+        String name = "30-00:42:16.961+67.jpg";
+        String httpUrl = "http://7xng4x.com1.z0.glb.clouddn.com/fakeUser_20170628_7";
+        WechatUtil.saveFileFromUrl(httpUrl, name, path);
+    }
+
+    // fC9Ne1AagOlgc2o7_21ADQvGJ4tH41HaQ5xF8PSPe8EK_OCQFufIdqAH46JRO0tJ_dPzo0M27BTuPFE6V8gyLzPUaI_drVW-zvX1rgnUZRc2mK0On3Iz6eMpjWJhq5zbSRUgADAVUX
+
 }
