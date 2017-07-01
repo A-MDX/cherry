@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * Created by A-mdx on 2017/6/26.
  */
-@Document(collection = "MongoDataPO")
+@Document(collection = "wechatData")
 public class MongoDataPO implements Serializable{
     
     @Id

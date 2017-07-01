@@ -48,6 +48,7 @@ public class WechatMessageService {
 
     /**
      * 准备做一个机制，消息融合
+     * 每次消息间隔3分钟内，而且还不超过10条，就会启用推送机制。
       * @param msg
      * @return
      */
@@ -57,7 +58,7 @@ public class WechatMessageService {
 
         String content = msg.getContent();
         String user = msgPO.getUser();
-        String value = redisDao.getVal(wechatMsgDao+user);
+        String value = redisDao.getVal(WECHAT_TEXT_MSG_PREFIX+user);
         if (value == null){
             // 说明还没有融合过，定义3分钟呢吧
             msgPO.setType(CommonCode.WECHAT_MSG_TYPE_TEXT);
@@ -68,8 +69,8 @@ public class WechatMessageService {
             redisDao.addVal(WECHAT_TEXT_MSG_PREFIX+user, 1+"", 3, TimeUnit.MINUTES);
         }else {
             // 需要启动融合机制了
-            msgPO = wechatMsgDao.findByUserAndStatusAndType(user, CommonCode.WECHAT_MSG_TYPE_TEXT
-                    , CommonCode.STATUS_YES
+            msgPO = wechatMsgDao.findByUserAndStatusAndType(user, CommonCode.VALID_TRUE
+                    , CommonCode.WECHAT_MSG_TYPE_TEXT
                     , new PageRequest(0, 1, new Sort(Sort.Direction.DESC, "time"))).get(0);
             msgPO.setData(msgPO.getData()+"\n"+msg.getContent());
             msgPO.setModifier(user);
@@ -83,7 +84,6 @@ public class WechatMessageService {
                 redisDao.addVal(WECHAT_TEXT_MSG_PREFIX+user, val+"", 3, TimeUnit.MINUTES);
             }
         }
-
         
         if (content.equals("hehe") || content.equals("呵呵")){
             throw new WechatException("呵呵 个篮子。", msg);
@@ -101,6 +101,9 @@ public class WechatMessageService {
 
         WechatMsgPO msgPO = initPO(msg);
 
+        // 删除这个键，不然对那个造成影响。
+        redisDao.deleteVal(WECHAT_TEXT_MSG_PREFIX+msgPO.getUser());
+        
         Document json = new Document("type", msg.getMsgType());
         json.append("url", msg.getPicUrl());
         json.append("mediaId", msg.getMediaId());
@@ -121,7 +124,7 @@ public class WechatMessageService {
         mongoDataPO.setType("image");
         mongoDataPO.setPath(fileSavePath + "/image/"+ldtime.format(DateTimeFormatter.ofPattern("yyyyMM")));
         mongoDataPO.setMysqId(msgPO.getId());
-        mongoDataPO.setName(ldtime.format(DateTimeFormatter.ofPattern("dd-HH:mm:ss.SSS"))+"+"+genRandomNum()+".jpg"); // todo...
+        mongoDataPO.setName(ldtime.format(DateTimeFormatter.ofPattern("dd~HH_mm_ss.SSS"))+"+"+genRandomNum()+".jpg"); 
         mongoDataPO.setDataUrl(msg.getPicUrl());
 
         mongoDataPO.setStatus(CommonCode.VALID_TRUE);
@@ -142,32 +145,7 @@ public class WechatMessageService {
         double temp1 = Math.random()*100;
         return (int) temp1;
     }
-
-    public static void main(String[] args) {
-        LocalDateTime ldtime = LocalDateTime.now();
-        String time = ldtime.format(DateTimeFormatter.ofPattern("dd-HH:mm:ss.SSS"));
-        System.out.println(time);
-    }
-
-    public String analysisDataMsg(XmlMsg msg) {
-        WechatMsgPO msgPO = initPO(msg);
-        
-        msgPO.setType(CommonCode.WECHAT_MSG_TYPE_DATA);
-        
-        // init mongo bean
-        MongoDataPO mongoDataPO = new MongoDataPO();
-        mongoDataPO.setCreationTime(new Date());
-        mongoDataPO.setCreator(msgPO.getUser());
-        mongoDataPO.setDataId(msg.getMediaId());
-        mongoDataPO.setType(msg.getMsgType());
-        mongoDataPO.setStatus(CommonCode.VALID_TRUE);
-        mongoDataPO.setName("目前还没那么多新花样。"+msg.getMsgType());
-        
-        // download data?
-        
-
-        return null;
-    }
+    
     
     private WechatMsgPO initPO(final XmlMsg xmlMsg){
         WechatMsgPO msgPO = new WechatMsgPO();

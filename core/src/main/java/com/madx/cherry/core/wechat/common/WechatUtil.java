@@ -54,7 +54,7 @@ public class WechatUtil {
 
             // 只是为了自动关闭
             try (DataInputStream inputStream = new DataInputStream(connection.getInputStream());
-                 FileOutputStream fileOutputStream = new FileOutputStream(file)){
+                 FileOutputStream fileOutputStream = new FileOutputStream(filePath)){
                 // 保存图片开始
                 byte[] temp = new byte[1024*100]; // 100k 
                 int length;
@@ -108,16 +108,20 @@ public class WechatUtil {
         return null;
     }
 
-    public static void main(String... args){
-        BasicDBObject json = new BasicDBObject();
-        json.append("touser", "oEYIP0wamw-fSnN103-JYGN5eHq8")
-                .append("msgtype", "text")
-                .append("text", new BasicDBObject("content", "Hello, Mr.Ma."));
-        String accessToken = "NVEaNrmYnlQvSJAZG0ixq43noLd-73ItnYbqlWmAENj2zU3ZZtTEFGlGxdoiPw-ugiWrIRnofKJOB7hLCD9PLJHRHb1-rChVJFkpbGsImJYJ3sabrenTiUvp_H3anRBOLYOgABAOBR";
-        Optional<BasicDBObject> jsonO = sendMessage(accessToken, json.toJson());
-        json = jsonO.orElse(json);
-
-        System.out.println(json.toJson());
+    public static void main(String... args) throws FileNotFoundException {
+//        BasicDBObject json = new BasicDBObject();
+//        json.append("touser", "oEYIP0wamw-fSnN103-JYGN5eHq8")
+//                .append("msgtype", "text")
+//                .append("text", new BasicDBObject("content", "Hello, Mr.Ma."));
+//        String accessToken = "NVEaNrmYnlQvSJAZG0ixq43noLd-73ItnYbqlWmAENj2zU3ZZtTEFGlGxdoiPw-ugiWrIRnofKJOB7hLCD9PLJHRHb1-rChVJFkpbGsImJYJ3sabrenTiUvp_H3anRBOLYOgABAOBR";
+//        Optional<BasicDBObject> jsonO = sendMessage(accessToken, json.toJson());
+//        json = jsonO.orElse(json);
+//
+//        System.out.println(json.toJson());
+        
+        String filePath = "C:/Users/A-mdx/Desktop/image/201707/01-12_22_11,320+50.jpg";
+        String httpPath = "http://mmbiz.qpic.cn/mmbiz_jpg/IUWdxTWzmFMibUiaP6biboj6KylYO30SuVpNPHiagiaLdAYKnsQAPUXVcEKcJsQtm44bFY2EjibiaZVZxujgsjvMGATUw/0";
+        
     }
     
 }

@@ -39,13 +39,17 @@ public class WechatJob {
                 mongoDataDao.save(k);
             }
         });
-        
-        
+
+
         System.out.println("----------------------------------------end-----------------------------------");
         System.out.println("------------------------------------------------------------------------------");
     }
     
     /*
+    
+    
+    C:/Users/A-mdx/Desktop/image/201707
+    
     java.io.FileNotFoundException: C:\Users\A-mdx\Desktop\image\201706\30-00:42:16.961+67.jpg (文件名、目录名或卷标语法不正确。)
 	at java.io.FileOutputStream.open0(Native Method)
 	at java.io.FileOutputStream.open(FileOutputStream.java:270)

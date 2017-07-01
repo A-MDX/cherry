@@ -12,6 +12,6 @@ import java.util.List;
  */
 public interface WechatMsgDao extends JpaRepository<WechatMsgPO, Long> {
 
-    List<WechatMsgPO> findByUserAndStatusAndType(String user, Integer type, Integer status, Pageable pageable);
+    List<WechatMsgPO> findByUserAndStatusAndType(String user, Integer status, Integer type, Pageable pageable);
 
 }

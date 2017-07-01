@@ -43,4 +43,4 @@ spring:
 # 最后的不加 斜杠 只有 这种斜杠才好使呀 / , 哎
 file:
   save:
-   path: C:/Users/A-mdx/Desktop
+   path: C://Users/A-mdx/Desktop
