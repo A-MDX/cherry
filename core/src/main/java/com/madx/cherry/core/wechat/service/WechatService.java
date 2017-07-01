@@ -55,7 +55,7 @@ public class WechatService {
 //                e.printStackTrace();
             }
         }
-        return messageService.analysisDataMsg(msg);
+        return messageService.analysisText(msg);
     }
 
     private String commandRun(int command) {
