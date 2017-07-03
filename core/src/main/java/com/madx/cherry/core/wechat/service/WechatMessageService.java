@@ -78,6 +78,7 @@ public class WechatMessageService {
             wechatMsgDao.save(msgPO);
             int val = Integer.parseInt(value);
             if (val >= 10){
+                // 超过10次不在新增
                 redisDao.deleteVal(WECHAT_TEXT_MSG_PREFIX+user);
             }else {
                 val++;
