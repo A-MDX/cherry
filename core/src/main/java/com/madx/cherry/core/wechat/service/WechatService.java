@@ -1,5 +1,6 @@
 package com.madx.cherry.core.wechat.service;
 
+import com.madx.cherry.core.wechat.bean.Result;
 import com.madx.cherry.core.wechat.bean.XmlMsg;
 
 import org.slf4j.Logger;
@@ -81,4 +82,10 @@ public class WechatService {
         return "success";
     }
 
+    public Result getDailyMessage(String date) {
+        Result result = Result.instance();
+        
+        
+        return result;
+    }
 }

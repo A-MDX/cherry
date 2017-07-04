@@ -5,7 +5,21 @@ import java.io.Serializable;
 import java.util.Date;
 
 
+/**
+ * CREATE TABLE `wechat_msg` (
+ `id` bigint(20) NOT NULL AUTO_INCREMENT,
+ `type` int(11) DEFAULT NULL COMMENT '数据类型，若为文本，则data为文本，其他则为id',
+ `msg_type` char(15) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '数据的类型，文字表示',
+ `data` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '根据type的不同会产生不同的数据，如果是文本，则会是文字，若是其他，则会传输的id',
+ `time` datetime DEFAULT NULL,
+ `user` char(15) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '来源',
+ `status` int(11) DEFAULT NULL COMMENT '状态，一般为有效无效',
+ `modifier` char(15) COLLATE utf8_unicode_ci DEFAULT NULL,
+ `modify_time` datetime DEFAULT NULL,
+ PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 
+ */
 
 @Entity
 @Table(name="wechat_msg")

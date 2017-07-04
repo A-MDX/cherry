@@ -3,11 +3,17 @@ package com.madx.cherry.core.wechat.common;
 import com.madx.cherry.core.common.CommonCode;
 import com.madx.cherry.core.wechat.bean.MongoDataPO;
 import com.madx.cherry.core.wechat.dao.MongoDataDao;
+import com.madx.cherry.core.wechat.dao.WechatMsgDao;
+import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +26,13 @@ public class WechatJob {
 
     @Autowired
     private MongoDataDao mongoDataDao;
+    
+    @Autowired
+    private MongoClient mongoClient;
+    
+    @Autowired
+    private WechatMsgDao wechatMsgDao;
+    
 
     /**
      * 下载文件至本地
@@ -27,7 +40,7 @@ public class WechatJob {
     @Scheduled(cron = "0/30 * * * * *")
     public void downloadFile(){
         System.out.println("------------------------------------------------------------------------------");
-        System.out.println("--------------------------------------start-----------------------------------");
+        System.out.println("--------------------------------------start downloadFile -----------------------------------");
         List<MongoDataPO> list = mongoDataDao.findBySaveLocalAndStatus(false, CommonCode.VALID_TRUE);
         System.out.println("size : "+list.size());
         list.forEach(System.out::println);
@@ -41,9 +54,26 @@ public class WechatJob {
         });
 
 
-        System.out.println("----------------------------------------end-----------------------------------");
+        System.out.println("----------------------------------------end downloadFile-----------------------------------");
         System.out.println("------------------------------------------------------------------------------");
     }
+    
+    
+    public void gendailyMessage(){
+        System.out.println("------------------------------------------------------------------------------");
+        System.out.println("--------------------------------------start downloadFile -----------------------------------");
+
+        // 1.寻找存储的数据
+        MongoCollection<Document> collection = mongoClient.getDatabase("test").getCollection("daily");
+        List<Document> list = new ArrayList<>();
+        FindIterable<Document> iterable = collection.find(new Document("date", "2017-07-17"));
+        iterable.into(list);
+        
+
+        System.out.println("----------------------------------------end downloadFile-----------------------------------");
+        System.out.println("------------------------------------------------------------------------------");
+    }
+    
     
     /*
     

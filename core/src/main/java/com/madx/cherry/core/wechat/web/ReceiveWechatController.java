@@ -1,5 +1,6 @@
 package com.madx.cherry.core.wechat.web;
 
+import com.madx.cherry.core.wechat.bean.Result;
 import com.madx.cherry.core.wechat.bean.XmlMsg;
 import com.madx.cherry.core.wechat.common.WechatConfig;
 import com.madx.cherry.core.wechat.service.WechatService;
@@ -77,6 +78,11 @@ public class ReceiveWechatController {
         
         
         return "success";
+    }
+    
+    @RequestMapping(value = "dailyMessage", method = RequestMethod.GET)
+    public Result getDailyMessage(@RequestParam(name = "query", required = false) String query){
+        return wechatService.getDailyMessage(query);
     }
 
     /**
