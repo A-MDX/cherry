@@ -44,3 +44,11 @@ spring:
 file:
   save:
    path: C://Users/A-mdx/Desktop
+
+---
+# 自定义存放数据库，表名 collection
+msg:
+  mongo:
+    database: test
+    collection:
+      daily: daily

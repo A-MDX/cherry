@@ -151,7 +151,7 @@ public class WechatMessageService {
     private WechatMsgPO initPO(final XmlMsg xmlMsg){
         WechatMsgPO msgPO = new WechatMsgPO();
         // init user 
-        SysUserPO userPO = sysUserDao.findByOpenId(xmlMsg.getFromUserName());
+        SysUserPO userPO = sysUserDao.findByOpenIdAndStatus(xmlMsg.getFromUserName(), CommonCode.VALID_TRUE);
         System.out.println("user:"+userPO);
 
         WechatUtil.isNullForMsg(userPO, xmlMsg, "查不到当前用户了。或许得先绑定一下。");

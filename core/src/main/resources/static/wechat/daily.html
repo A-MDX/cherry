@@ -200,7 +200,7 @@
 <p>3. 你可以使用 X5 Blink 调试，或者是基于 weinre 的移动调试功能;</p>
 <p>10:09</p>
 
-<p>4. 你可以利用集成的Chrome DevTools协助开发。</p></body>
+<p>4. 你可以利用集成的Chrome DevTools协助开发。</p>
 <hr>
 <div class="item">
     <p class="time">10:09</p>
@@ -231,4 +231,33 @@
 <p>&nbsp;&nbsp;&nbsp;&nbsp;你可以利用集成的Chrome DevTools协助开发。</p>
 <p style="font-weight: bold;font-size: 15px;">10:09</p>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;你可以利用集成的Chrome DevTools协助开发。</p>
+</body>
+<script>
+    // 使用最原始的拼接方式？不引入 jquery ？
+    // http://www.w3school.com.cn/ajax/ajax_xmlhttprequest_onreadystatechange.asp
+
+    var url = "";
+    window.onload = function(){
+        var token = window.location.hash;
+        console.log(token);
+        if (token === null || token === ""){
+            return;
+        }
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", "url"+token, true); // 是否异步
+        xmlhttp.send();
+        // 发送完成
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState === 4 && xmlhttp.readyState === 200){
+                var data = xmlhttp.responseText;
+                console.log(data);
+                // 转为 json ，开始处理
+                var json = JSON.parse(data);
+                document.getElementById("xx").innerHTML = json['xx'];
+                // todo
+            }
+        }
+
+    }
+</script>
 </html>

@@ -1,8 +1,14 @@
 package com.madx.cherry.core.wechat.service;
 
+import com.madx.cherry.core.common.CommonCode;
+import com.madx.cherry.core.common.dao.RedisDao;
+import com.madx.cherry.core.common.dao.SysUserDao;
+import com.madx.cherry.core.common.entity.SysUserPO;
 import com.madx.cherry.core.wechat.bean.Result;
 import com.madx.cherry.core.wechat.bean.XmlMsg;
 
+import com.madx.cherry.core.wechat.common.WechatUtil;
+import com.madx.cherry.core.wechat.service.command.CommandExecute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +26,21 @@ public class WechatService {
 
     @Autowired
     private WechatMessageService messageService;
+    @Autowired
+    private RedisDao redisDao;
+    @Autowired
+    private SysUserDao userDao;
     
     public String distributeMsg(XmlMsg msg) {
+
+        // 先在这一层验证当前user 信息的合法性
+        String openId = msg.getFromUserName();
+        SysUserPO userPO = userDao.findByOpenIdAndStatus(openId, CommonCode.VALID_TRUE);
+        WechatUtil.isNullForMsg(userPO, msg, "没找到你的用户信息，或者你被注销了，要不你找管理员注册一个？");
+
         switch (msg.getMsgType()){
             case "text":
-                return commandFind(msg);
+                return commandFind(msg, userPO);
             case "image":
                 return messageService.analysisImage(msg);
 //            case "voice":
@@ -45,13 +61,14 @@ public class WechatService {
     /**
      * 寻找是否为命令，暂定命令为 0-9， 若为命令，会启动菜单赋予模式
      * @param msg
+     * @param userPO
      * @return
      */
-    public String commandFind(XmlMsg msg){
+    public String commandFind(XmlMsg msg, SysUserPO userPO){
         String content = msg.getContent();
         if (content.length() == 1){
             try {
-                return commandRun(Integer.parseInt(content));
+                return commandRun(Integer.parseInt(content), msg, userPO);
             } catch (NumberFormatException e) {
 //                e.printStackTrace();
             }
@@ -59,10 +76,15 @@ public class WechatService {
         return messageService.analysisText(msg);
     }
 
-    private String commandRun(int command) {
+    private String commandRun(int command, XmlMsg msg, SysUserPO userPO) {
+        CommandExecute execute;
         switch (command){
             case 0:
+                break;
             case 1:
+                // 执行一个发送文章的请求
+
+                break;
             case 2:
             case 3:
             case 4:

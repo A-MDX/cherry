@@ -1,19 +1,32 @@
 package com.madx.cherry.core.wechat.common;
 
 import com.madx.cherry.core.common.CommonCode;
+import com.madx.cherry.core.common.dao.SysUserDao;
+import com.madx.cherry.core.common.entity.SysUserPO;
 import com.madx.cherry.core.wechat.bean.MongoDataPO;
+import com.madx.cherry.core.wechat.bean.WechatMsgPO;
 import com.madx.cherry.core.wechat.dao.MongoDataDao;
 import com.madx.cherry.core.wechat.dao.WechatMsgDao;
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.util.JSON;
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -24,14 +37,16 @@ import java.util.List;
 @Component
 public class WechatJob {
 
+    private static Logger logger = LoggerFactory.getLogger(WechatJob.class);
+
     @Autowired
     private MongoDataDao mongoDataDao;
-    
     @Autowired
     private MongoClient mongoClient;
-    
     @Autowired
     private WechatMsgDao wechatMsgDao;
+    @Autowired
+    private SysUserDao userDao;
     
 
     /**
@@ -61,16 +76,78 @@ public class WechatJob {
     
     public void gendailyMessage(){
         System.out.println("------------------------------------------------------------------------------");
-        System.out.println("--------------------------------------start downloadFile -----------------------------------");
+        System.out.println("--------------------------------------start gendailyMessage -----------------------------------");
 
-        // 1.寻找存储的数据
+        // 1.寻找存储的数据，若没有，则继续走下去
         MongoCollection<Document> collection = mongoClient.getDatabase("test").getCollection("daily");
         List<Document> list = new ArrayList<>();
-        FindIterable<Document> iterable = collection.find(new Document("date", "2017-07-17"));
-        iterable.into(list);
-        
+        LocalDate localDate = LocalDate.now();
+        localDate = localDate.minusDays(1);
+        String yesterday = localDate.format(DateTimeFormatter.ISO_DATE);
 
-        System.out.println("----------------------------------------end downloadFile-----------------------------------");
+        FindIterable<Document> iterable = collection.find(new Document("date", yesterday).append("status", CommonCode.VALID_TRUE));
+        iterable.into(list);
+        if (list.size() > 0){
+            logger.info("已经存在了需要的数据，不需要在跑数据库加数据了。");
+            return;
+        }
+        // 2.遍历用户数组
+        List<SysUserPO> users = userDao.findByStatus(CommonCode.VALID_TRUE);
+
+        // 3.查询数据列表，开始拼装
+        String time2 = yesterday+" 23:59:59";
+        Date date = new Date();
+        users.forEach(u -> {
+            List<WechatMsgPO> msgPOs = wechatMsgDao.findByUserAndTimeBetween(u.getLoginName(), yesterday, time2);
+            Document dailyMsg = new Document();
+            dailyMsg.append("name", yesterday).append("status", CommonCode.VALID_TRUE).append("user", u.getLoginName());
+            dailyMsg.append("creationTime", date);
+            List<Document> data = new ArrayList<>();
+            msgPOs.forEach(m -> {
+                Document item = new Document();
+                //todo 准备新增两个字段 看 msg.json
+
+                // 4.生成时间
+                Instant instant = m.getTime().toInstant();
+                LocalDateTime time = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+                String timeStr = time.format(DateTimeFormatter.ofPattern("HH:mm"));
+                item.append("time", timeStr);
+
+                // 5.生成数据,条目
+                switch (m.getType()){
+                    case CommonCode.WECHAT_MSG_TYPE_TEXT:
+                        item.append("type", "text");
+                        // init data
+                        List<String> msgList = new ArrayList<>();
+                        String msgData = m.getData();
+                        msgList.addAll(Arrays.asList(msgData.split("\n")));
+                        item.append("message", msgList);
+                        break;
+                    case CommonCode.WECHAT_MSG_TYPE_IMAGE:
+                        item.append("type", "image");
+                        // init url
+                        String jsonStr = m.getData();
+                        if (jsonStr.contains("{")){
+                            BasicDBObject json = (BasicDBObject) JSON.parse(jsonStr);
+                            item.append("url", json.get("url"));
+                        }else {
+                            item.append("url", jsonStr);
+                        }
+
+                        break;
+                    default:
+                        return;
+                }
+
+                data.add(item);
+            });
+            dailyMsg.append("data", data);
+            // 6.保存至数据库
+            collection.insertOne(dailyMsg);
+
+        });
+
+        System.out.println("----------------------------------------end gendailyMessage-----------------------------------");
         System.out.println("------------------------------------------------------------------------------");
     }
     
@@ -106,10 +183,12 @@ public class WechatJob {
      */
 
     public static void main(String... args){
-        String path = "/Users/a-mdx/Desktop/image/201706";
-        String name = "30-00:42:16.961+67.jpg";
-        String httpUrl = "http://7xng4x.com1.z0.glb.clouddn.com/fakeUser_20170628_7";
-        WechatUtil.saveFileFromUrl(httpUrl, name, path);
+        Instant instant = Instant.now();
+        LocalDateTime time = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+        String timeStr = time.format(DateTimeFormatter.ofPattern("HH:mm"));
+        System.out.println(timeStr);
+
     }
 
     // fC9Ne1AagOlgc2o7_21ADQvGJ4tH41HaQ5xF8PSPe8EK_OCQFufIdqAH46JRO0tJ_dPzo0M27BTuPFE6V8gyLzPUaI_drVW-zvX1rgnUZRc2mK0On3Iz6eMpjWJhq5zbSRUgADAVUX

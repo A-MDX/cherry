@@ -1,8 +1,14 @@
 {
   "name":"2017-07-03",
   "status": 10031001,
+  "user": "madx",
+  "creationTime":1123123123,
+  "picUrl":"https://pic4.zhimg.com/50/v2-9283890cead4275225ed6e92528e31c3_hd.jpg",
+  "description":"xxx",
+  "comment":"这个就是所需要的数据结构了，到时候还需要在数据层面拼一下",
   "data" : [
     {
+      "type":"text",
       "time":"10:58",
       "message":[
         "哎呀妈呀",
@@ -11,6 +17,12 @@
       ]
     },
     {
+      "type":"img",
+      "time":"13:15",
+      "url":"https://pic4.zhimg.com/50/v2-9283890cead4275225ed6e92528e31c3_hd.jpg"
+    },
+    {
+      "type":"text",
       "time":"11:20",
       "message":[
         "哎呀妈呀",

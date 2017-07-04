@@ -36,6 +36,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name="creator")
 	private Integer creator;
 
+	@Column(name = "status")
+	private Integer status;
+
 	@Column(name="creation_time")
 	private Date creationTime;
 
@@ -44,6 +47,14 @@ private static final long serialVersionUID = 1L;
 
 	@Column(name="mofify_time")
 	private Date mofifyTime;
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 
 	public void setId(Integer id){
     	this.id = id;

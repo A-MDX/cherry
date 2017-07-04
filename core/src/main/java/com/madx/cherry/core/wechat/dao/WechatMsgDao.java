@@ -14,4 +14,5 @@ public interface WechatMsgDao extends JpaRepository<WechatMsgPO, Long> {
 
     List<WechatMsgPO> findByUserAndStatusAndType(String user, Integer status, Integer type, Pageable pageable);
 
+    List<WechatMsgPO> findByUserAndTimeBetween(String user, String time1, String time2);
 }

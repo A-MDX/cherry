@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,6 +38,9 @@ public class WechatConfig {
     @Autowired
     private RedisDao redisDao;
 
+    public Optional<BasicDBObject> sendMessage(BasicDBObject json){
+        return WechatUtil.sendMessage(getAccessToken(), json.toJson());
+    }
 
     /**
      * 生成 accessToken
