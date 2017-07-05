@@ -1,12 +1,11 @@
 package com.madx.cherry.core.wechat.service;
 
-import com.madx.cherry.core.common.ArgumentsException;
 import com.madx.cherry.core.common.CommonCode;
 import com.madx.cherry.core.common.CommonUtil;
 import com.madx.cherry.core.common.dao.RedisDao;
 import com.madx.cherry.core.common.dao.SysUserDao;
 import com.madx.cherry.core.common.entity.SysUserPO;
-import com.madx.cherry.core.wechat.bean.Result;
+import com.madx.cherry.core.common.util.SpringContextUtil;
 import com.madx.cherry.core.wechat.bean.XmlMsg;
 import com.madx.cherry.core.wechat.common.WechatUtil;
 import com.madx.cherry.core.wechat.service.command.CommandExecute;
@@ -14,6 +13,8 @@ import com.madx.cherry.core.wechat.service.command.SendDailyArticleCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.stereotype.Service;
 
 
@@ -32,6 +33,13 @@ public class WechatService {
     private RedisDao redisDao;
     @Autowired
     private SysUserDao userDao;
+    @Autowired
+    private SimpleAsyncTaskExecutor taskExecutor;
+    
+    @Bean
+    public SimpleAsyncTaskExecutor getTaskExecutor(){
+        return new SimpleAsyncTaskExecutor();
+    }
     
     public String distributeMsg(XmlMsg msg) {
 
@@ -79,13 +87,13 @@ public class WechatService {
     }
 
     private String commandRun(int command, XmlMsg msg, SysUserPO userPO) {
-        CommandExecute execute = null;
+        final CommandExecute[] execute = {null};
         switch (command){
             case 0:
                 break;
             case 1:
                 // 执行一个发送文章的请求
-                execute = new SendDailyArticleCommand();
+                execute[0] = new SendDailyArticleCommand();
                 break;
             case 2:
             case 3:
@@ -97,14 +105,11 @@ public class WechatService {
             case 9:
 
         }
-        if (execute != null){
-            CommandExecute finalExecute = execute;
-            new Thread(() -> {
-                // 发 一个命令列表链接， 外加一个 直接的控制命令
-                logger.info("something is execute start");
-                finalExecute.execute(msg, userPO);
-                logger.info("something is execute end");
-            }).start();
+        if (execute[0] != null){
+            taskExecutor.execute(() -> {
+                execute[0] = SpringContextUtil.getBean("sendDailyArticleCommand", SendDailyArticleCommand.class);
+                execute[0].execute(msg, userPO);
+            });
         }
         
 

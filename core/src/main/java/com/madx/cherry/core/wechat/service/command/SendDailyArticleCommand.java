@@ -31,6 +31,7 @@ public class SendDailyArticleCommand implements CommandExecute {
 
     @Autowired
     private CommandExecuteUtil executeUtil;
+    
 
     @Override
     public void execute(XmlMsg msg, SysUserPO userPO) {
@@ -41,6 +42,7 @@ public class SendDailyArticleCommand implements CommandExecute {
                 .append("msgtype", "news");
         BasicDBObject article = new BasicDBObject();
 
+        
         // 寻找昨天的数据
         LocalDate yesterday = LocalDate.now().minusDays(1);
         MongoCollection<Document> collection = executeUtil.getMongoClient().getDatabase(executeUtil.getDatabase()).getCollection(executeUtil.getCollectionDaily());
@@ -79,7 +81,10 @@ public class SendDailyArticleCommand implements CommandExecute {
         String url = "http://a-mdx.iask.in/wechat/daily.html#"+token;
         article.append("url", url);
         
-        json.append("news", Collections.singletonList(article));
+        json.append("news", new BasicDBObject("articles", Collections.singletonList(article)));
+
+        System.out.println("-------***-----");
+        System.out.println(json.toJson());
 
         Optional<BasicDBObject> reOption = executeUtil.getWechatConfigUtil().sendMessage(json);
         reOption.ifPresent(basicDBObject -> logger.info(basicDBObject.toJson()));

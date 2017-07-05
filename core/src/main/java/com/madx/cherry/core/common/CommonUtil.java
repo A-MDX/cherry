@@ -7,12 +7,8 @@ import com.google.gson.Gson;
  */
 public class CommonUtil {
 
-    public static Gson gson;
-
-    {
-        gson = new Gson();
-    }
-
+    public static Gson gson = new Gson();
+    
     /**
      * 验证数据是否为空
      * @param obj

@@ -1,6 +1,5 @@
 package com.madx.cherry.core.wechat.web;
 
-import com.madx.cherry.core.wechat.bean.Result;
 import com.madx.cherry.core.wechat.bean.XmlMsg;
 import com.madx.cherry.core.wechat.common.WechatConfigUtil;
 import com.madx.cherry.core.wechat.service.WechatService;
@@ -70,9 +69,7 @@ public class ReceiveWechatController {
         System.out.println("response :\n"+returnStr);
         response.setContentType("text/html");
         response.setCharacterEncoding("utf-8");
-
-        
-        
+      
         return "success";
     }
     

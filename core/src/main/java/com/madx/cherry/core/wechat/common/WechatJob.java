@@ -67,12 +67,27 @@ public class WechatJob {
             }
         });
 
+        /*
+        {
+    "touser": "oEYIP0wamw-fSnN103-JYGN5eHq8",
+    "msgtype": "news",
+    "news": [
+        {
+            "title": "2017年 07月 05日",
+            "description": "...讲真，昨天的我好像没写。",
+            "picurl": "http://ww1.sinaimg.cn/bmiddle/8ea820f9ly1fh87lbyzkdj20nq0zk434.jpg",
+            "url": "http://a-mdx.iask.in/wechat/daily.html#f30c76589678"
+        }
+    ]
+}
+         */
 
         logger.info("------------------------------end downloadFile--------------------------------");
         logger.info("------------------------------------------------------------------------------");
     }
     
     @Scheduled(cron = "0 0/30 6 * * *")
+//    @Scheduled(cron = "0/30 * * * * *")
     public void genDailyMessage(){
         logger.info("------------------------------------------------------------------------------");
         logger.info("--------------------------start genDailyMessage ------------------------------");

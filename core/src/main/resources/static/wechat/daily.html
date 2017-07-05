@@ -299,7 +299,7 @@
         console.log('loading complete...');
     };
 
-    var url = "";
+    var url = "http://a-mdx.iask.in/wechat/dailyMessage/";
     window.onload = function(){
         var token = window.location.hash;
         console.log(token);
@@ -309,7 +309,7 @@
         token = token.replace("#", "");
 
         var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("GET", "url"+token, true); // 是否异步
+        xmlhttp.open("GET", url+token, true); // 是否异步
         xmlhttp.send();
         // 发送完成
         xmlhttp.onreadystatechange = function () {
@@ -319,7 +319,7 @@
             console.log(json);
 
             // 成功
-            if (xmlhttp.readyState === 4 && xmlhttp.readyState === 200){
+            if (xmlhttp.readyState === 4 || xmlhttp.readyState === 200){
 
                 console.log("ready to loading");
                 document.getElementById("title").innerHTML = '这一天是 ' + json.name;
@@ -349,7 +349,7 @@
             // 失败的
             else if (xmlhttp.readyState === 400){
                 alert("这里出了点问题：\n"+json.msg);
-            }else {
+            }else if (xmlhttp.readyState === 500){
                 alert("出错了，异常信息为：\n"+data);
             }
         }
