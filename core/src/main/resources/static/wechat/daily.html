@@ -1,5 +1,5 @@
 
-7<html>
+<html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
@@ -167,74 +167,137 @@
                 page-break-inside: avoid
             }
         }</style>
-    <title>微信web开发者工具</title>
+    <title>以梦为马，不负昭华</title>
     <style>
         .time{
             font-weight: bold;
             font-size: 15px;
-            margin-bottom: 13px;
+            margin-bottom: 6px;
         }
         .item{
-            margin-bottom: 13px;
+            margin-bottom: 16px;
         }
         .title p{
             margin-bottom: 13px;
         }
+        img{
+            max-width: 100%;
+        }
     </style>
 </head>
-<body><h2>微信web开发者工具</h2>
+<body>
+<h2 id="title">微信web开发者工具</h2>
 <hr>
 <div class="title">
     <p>欢迎使用微信Web开发者工具</p>
-    <p>通过该工具，你可以更加便捷的调试微信上的网页：</p>
+    <p id="username">通过该工具，你可以更加便捷的调试微信上的网页：</p>
 </div>
 
+<div id="body">
 
-<h4>10:09</h4>
-<p>1. 你可以使用自己的微信号来调试微信网页授权;</p>
-<h4>10:09</h4>
-
-<p>2. 你可以调试、检验页面的JS-SDK相关功能与权限，模拟大部分 SDK 的输入和输出;</p>
-<h4>10:09</h4>
-
-<p>3. 你可以使用 X5 Blink 调试，或者是基于 weinre 的移动调试功能;</p>
-<p>10:09</p>
-
-<p>4. 你可以利用集成的Chrome DevTools协助开发。</p>
-<hr>
-<div class="item">
-    <p class="time">10:09</p>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;你可以利用集成的Chrome DevTools协助开发。你可以调试、检验页面的JS-SDK相关功能与权限，模拟大部分 SDK 的输入和输出;</p>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;你可以利用集成的Chrome DevTools协助开发。</p>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;你可以利用集成的Chrome DevTools协助开发。你可以调试、检验页面的JS-SDK相关功能与权限，模拟大部分 SDK 的输入和输出;</p>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;你可以利用集成的Chrome DevTools协助开发。</p>
 </div>
 
-<div class="item">
-    <p class="time">10:09</p>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;你可以利用集成的Chrome DevTools协助开发。你可以调试、检验页面的JS-SDK相关功能与权限，模拟大部分 SDK 的输入和输出;</p>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;你可以利用集成的Chrome DevTools协助开发。</p>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;你可以利用集成的Chrome DevTools协助开发。你可以调试、检验页面的JS-SDK相关功能与权限，模拟大部分 SDK 的输入和输出;</p>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;你可以利用集成的Chrome DevTools协助开发。</p>
-</div>
-
-<div class="item">
-    <p class="time">10:09</p>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;你可以利用集成的Chrome DevTools协助开发。<br/>你可以调试、检验页面的JS-SDK相关功能与权限，模拟大部分 SDK 的输入和输出;
-    <br/>&nbsp;&nbsp;&nbsp;&nbsp;你可以利用集成的Chrome DevTools协助开发。<br/>
-    <br/>&nbsp;&nbsp;&nbsp;&nbsp;你可以利用集成的Chrome DevTools协助开发。你可以调试、检验页面的JS-SDK相关功能与权限，模拟大部分 SDK 的输入和输出;<br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;你可以利用集成的Chrome DevTools协助开发。</p>
-</div>
-<p style="font-weight: bold;font-size: 15px;">10:09</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;你可以利用集成的Chrome DevTools协助开发。</p>
-<p style="font-weight: bold;font-size: 15px;">10:09</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;你可以利用集成的Chrome DevTools协助开发。</p>
-<p style="font-weight: bold;font-size: 15px;">10:09</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;你可以利用集成的Chrome DevTools协助开发。</p>
 </body>
 <script>
     // 使用最原始的拼接方式？不引入 jquery ？
     // http://www.w3school.com.cn/ajax/ajax_xmlhttprequest_onreadystatechange.asp
+
+    var onload = function () {
+
+        var json = {
+            "name" : "2017-07-04",
+            "user" : "madx",
+            "data" : [
+                {
+                    "time" : "13:20",
+                    "type" : "text",
+                    "message" : [
+                        "哥哥的"
+                    ]
+                },
+                {
+                    "time" : "13:23",
+                    "type" : "text",
+                    "message" : [
+                        "呵呵"
+                    ]
+                },
+                {
+                    "time" : "12:48",
+                    "type" : "image",
+                    "url" : "http://img.hb.aicdn.com/cda30b14ad599be35a55e61dbbdc1f979c27533825aaa-8ZyIsa_fw236"
+                },
+                {
+                    "time" : "13:28",
+                    "type" : "text",
+                    "message" : [
+                        "额",
+                        "我去",
+                        "哎呀",
+                        "想想看",
+                        "到期了",
+                        "哎呀",
+                        "呵呵哒",
+                        "…你这一天",
+                        "1234567989",
+                        "到期了",
+                        "我去"
+                    ]
+                },
+                {
+                    "time" : "12:55",
+                    "type" : "image",
+                    "url" : "http://ww1.sinaimg.cn/bmiddle/8ea820f9ly1fh87lbyzkdj20nq0zk434.jpg"
+                },
+                {
+                    "time" : "13:30",
+                    "type" : "text",
+                    "message" : [
+                        "高人气"
+                    ]
+                },
+                {
+                    "time" : "23:13",
+                    "type" : "text",
+                    "message" : [
+                        "我去",
+                        "哎呀"
+                    ]
+                },
+                {
+                    "time" : "23:14",
+                    "type" : "image",
+                    "url" : "http://mmbiz.qpic.cn/mmbiz_jpg/IUWdxTWzmFO9ZqXJ1mRhC0AyZone4hovX8nib8mCiaKiaSRibBado3xmMF341zibWib4t26DeMs2o5dHfQiaYdp09ia5WQ/0"
+                }
+            ],
+            "description" : "哥哥的呵呵额\n我去\n哎呀\n想想看\n到期了\n哎呀\n呵呵哒\n…你这一天\n1...",
+            "picUrl" : "http://mmbiz.qpic.cn/mmbiz_jpg/IUWdxTWzmFO9ZqXJ1mRhC0AyZone4hovX8nib8mCiaKiaSRibBado3xmMF341zibWib4t26DeMs2o5dHfQiaYdp09ia5WQ/0"
+        };
+
+        console.log("ready to loading");
+        document.getElementById("title").innerHTML = '这一天是 ' + json.name;
+        document.getElementById("username").innerHTML = '你好，' + json.user;
+        // init data
+        var arr = json.data;
+        var str = '';
+        arr.forEach(function (value, index, array) {
+            var temp = '<div class="item"><p class="time">'+value.time+'</p>';
+            if (value.type === 'text'){
+                var message = value.message;
+                for (var i = 0; i < message.length; i++){
+                    temp += '<p>&nbsp;&nbsp;&nbsp;&nbsp;'+message[i]+'</p>'
+                }
+            }else if (value.type === 'image'){
+                var url = value.url;
+                temp += '<img src="'+url+'" alt="这里应该有一张图">';
+            }
+
+            temp += "</div>";
+            str += temp;
+        });
+        document.getElementById("body").innerHTML = str;
+        console.log('loading complete...');
+    };
 
     var url = "";
     window.onload = function(){
@@ -243,18 +306,51 @@
         if (token === null || token === ""){
             return;
         }
+        token = token.replace("#", "");
+
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.open("GET", "url"+token, true); // 是否异步
         xmlhttp.send();
         // 发送完成
         xmlhttp.onreadystatechange = function () {
+            var data = xmlhttp.responseText;
+            // 转为 json ，开始处理
+            var json = JSON.parse(data);
+            console.log(json);
+
+            // 成功
             if (xmlhttp.readyState === 4 && xmlhttp.readyState === 200){
-                var data = xmlhttp.responseText;
-                console.log(data);
-                // 转为 json ，开始处理
-                var json = JSON.parse(data);
-                document.getElementById("xx").innerHTML = json['xx'];
-                // todo
+
+                console.log("ready to loading");
+                document.getElementById("title").innerHTML = '这一天是 ' + json.name;
+                document.getElementById("username").innerHTML = '你好，' + json.user;
+                // init data
+                var arr = json.data;
+                var str = '';
+                arr.forEach(function (value, index, array) {
+                    var temp = '<div class="item"><p class="time">'+value.time+'</p>';
+                    if (value.type === 'text'){
+                        var message = value.message;
+                        for (var i = 0; i < message.length; i++){
+                            temp += '<p>&nbsp;&nbsp;&nbsp;&nbsp;'+message[i]+'</p>'
+                        }
+                    }else if (value.type === 'image'){
+                        var url = value.url;
+                        temp += '<img src="'+url+'" alt="这里应该有一张图">';
+                    }
+
+                    temp += "</div>";
+                    str += temp;
+                });
+                document.getElementById("body").innerHTML = str;
+                console.log('loading complete...');
+
+            }
+            // 失败的
+            else if (xmlhttp.readyState === 400){
+                alert("这里出了点问题：\n"+json.msg);
+            }else {
+                alert("出错了，异常信息为：\n"+data);
             }
         }
 

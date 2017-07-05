@@ -1,5 +1,7 @@
 package com.madx.cherry.core.wechat.bean;
 
+import com.madx.cherry.core.common.CommonUtil;
+
 /**
  * Created by a-mdx on 2017/6/21.
  */
@@ -23,11 +25,7 @@ public class Result {
 
     @Override
     public String toString() {
-        return "Result{" +
-                "code=" + code +
-                ", msg='" + msg + '\'' +
-                ", data=" + data +
-                '}';
+        return "{ Result : "+ CommonUtil.toString(this)+" }";
     }
 
     public int getCode() {

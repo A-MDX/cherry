@@ -1,6 +1,8 @@
 package com.madx.cherry.core.wechat.service;
 
+import com.madx.cherry.core.common.ArgumentsException;
 import com.madx.cherry.core.common.CommonCode;
+import com.madx.cherry.core.common.CommonUtil;
 import com.madx.cherry.core.common.dao.RedisDao;
 import com.madx.cherry.core.common.dao.SysUserDao;
 import com.madx.cherry.core.common.entity.SysUserPO;
@@ -109,10 +111,15 @@ public class WechatService {
         return "success";
     }
 
-    public Result getDailyMessage(String date) {
-        Result result = Result.instance();
+    /**
+     * 获取前一天的消息
+     * @param date
+     * @return
+     */
+    public String getDailyMessage(String token) {
+        String str = redisDao.getVal(SendDailyArticleCommand.WECHAT_DAILY_PROFIX + token);
+        CommonUtil.validArgumentEmpty(str, "额，似乎因为过期，你的这个信息丢失了。");
         
-        
-        return result;
+        return str;
     }
 }

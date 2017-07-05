@@ -1,5 +1,10 @@
 package com.madx.cherry.core.wechat.bean;
 
+import com.google.gson.Gson;
+import com.madx.cherry.core.common.CommonUtil;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -125,17 +130,25 @@ public class MongoDataPO implements Serializable{
 
     @Override
     public String toString() {
-        return "MongoDataPO{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", type='" + type + '\'' +
-                ", dataId='" + dataId + '\'' +
-                ", creationTime=" + creationTime +
-                ", creator='" + creator + '\'' +
-                ", status=" + status +
-                ", mysqId=" + mysqId +
-                ", path='" + path + '\'' +
-                ", saveLocal=" + saveLocal +
-                '}';
+        return "{ MongoDataPO : "+CommonUtil.toString(this)+" }";
     }
+
+    public static void main(String... args){
+        MongoDataPO dataPO = new MongoDataPO();
+        dataPO.setPath("123123");
+        dataPO.setCreationTime(new Date());
+        dataPO.setCreator("madx");
+        dataPO.setName("呵呵哒");
+        String json = dataPO.toString();
+        System.out.println(json);
+
+        Gson gson = new Gson();
+        MongoDataPO data;
+        data = gson.fromJson(json, MongoDataPO.class);
+        System.out.println(data.getName());
+        System.out.println(data.getCreationTime());
+        System.out.println(data);
+    }
+
+
 }

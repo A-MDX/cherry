@@ -2,7 +2,7 @@ package com.madx.cherry.core.wechat.service.command;
 
 import com.madx.cherry.core.common.dao.RedisDao;
 import com.madx.cherry.core.common.dao.SysUserDao;
-import com.madx.cherry.core.wechat.common.WechatConfig;
+import com.madx.cherry.core.wechat.common.WechatConfigUtil;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
@@ -21,7 +21,7 @@ public class CommandExecuteUtil{
     @Autowired
     private SysUserDao userDao;
     @Autowired
-    private WechatConfig wechatConfig;
+    private WechatConfigUtil wechatConfigUtil;
     @Autowired
     private MongoClient mongoClient;
 
@@ -51,12 +51,12 @@ public class CommandExecuteUtil{
         this.userDao = userDao;
     }
 
-    public WechatConfig getWechatConfig() {
-        return wechatConfig;
+    public WechatConfigUtil getWechatConfigUtil() {
+        return wechatConfigUtil;
     }
 
-    public void setWechatConfig(WechatConfig wechatConfig) {
-        this.wechatConfig = wechatConfig;
+    public void setWechatConfigUtil(WechatConfigUtil wechatConfigUtil) {
+        this.wechatConfigUtil = wechatConfigUtil;
     }
 
     public MongoClient getMongoClient() {

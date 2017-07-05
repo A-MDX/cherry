@@ -27,7 +27,7 @@ public class SendDailyArticleCommand implements CommandExecute {
 
     private static Logger logger = LoggerFactory.getLogger(SendDailyArticleCommand.class);
 
-    private String WECHAT_DAILY_PROFIX = "wechat.daily.";
+    public static final String WECHAT_DAILY_PROFIX = "wechat.daily.";
 
     @Autowired
     private CommandExecuteUtil executeUtil;
@@ -52,7 +52,7 @@ public class SendDailyArticleCommand implements CommandExecute {
             // 发空消息
             json.append("msgtype", "text");
             json.append("text", new Document("content", "不知为何，咩有生成数据"));
-            executeUtil.getWechatConfig().sendMessage(json);
+            executeUtil.getWechatConfigUtil().sendMessage(json);
             return;
         }
 
@@ -81,7 +81,7 @@ public class SendDailyArticleCommand implements CommandExecute {
         
         json.append("news", Collections.singletonList(article));
 
-        Optional<BasicDBObject> reOption = executeUtil.getWechatConfig().sendMessage(json);
+        Optional<BasicDBObject> reOption = executeUtil.getWechatConfigUtil().sendMessage(json);
         reOption.ifPresent(basicDBObject -> logger.info(basicDBObject.toJson()));
 
     }

@@ -13,7 +13,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -23,9 +22,9 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 @ConfigurationProperties(prefix = "wechat")
-public class WechatConfig {
+public class WechatConfigUtil {
 
-    private static Logger logger = LoggerFactory.getLogger(WechatConfig.class);
+    private static Logger logger = LoggerFactory.getLogger(WechatConfigUtil.class);
 
     private String token;
     private String appID;
@@ -100,7 +99,7 @@ public class WechatConfig {
     }
 
     public static void main(String... args){
-        WechatConfig config = new WechatConfig();
+        WechatConfigUtil config = new WechatConfigUtil();
         config.setAppID("wx55378b2a7eaa7a16");
         config.setAppsecret("7e21d2375084101072729953c84a08d7");
         BasicDBObject json = config.genAccessToken();
@@ -141,7 +140,7 @@ public class WechatConfig {
 
     @Override
     public String toString() {
-        return "WechatConfig{" +
+        return "WechatConfigUtil{" +
                 "token='" + token + '\'' +
                 ", appID='" + appID + '\'' +
                 ", appsecret='" + appsecret + '\'' +

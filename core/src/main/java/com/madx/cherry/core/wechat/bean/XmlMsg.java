@@ -1,5 +1,6 @@
 package com.madx.cherry.core.wechat.bean;
 
+import com.madx.cherry.core.common.CommonUtil;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -86,14 +87,9 @@ public class XmlMsg {
 
 
     @Override
-	public String toString() {
-		return "XmlMsg [toUserName=" + toUserName + ", fromUserName=" + fromUserName + ", createTime=" + createTime
-				+ ", msgType=" + msgType + ", content=" + content + ", msgId=" + msgId + ", picUrl=" + picUrl
-				+ ", mediaId=" + mediaId + ", format=" + format + ", recognition=" + recognition + ", thumbMediaId="
-				+ thumbMediaId + ", location_x=" + location_x + ", location_y=" + location_y + ", scale=" + scale
-				+ ", label=" + label + ", title=" + title + ", description=" + description + ", url=" + url + ", event="
-				+ event + ", eventKey=" + eventKey + "]";
-	}
+    public String toString() {
+        return "{ XmlMsg : "+ CommonUtil.toString(this)+" }";
+    }
 
 	public String getToUserName() {
         return toUserName;

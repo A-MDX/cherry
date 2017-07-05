@@ -24,6 +24,7 @@
 		<module>javaline</module>
         <module>config-server</module>
 		<module>common</module>
+		<module>core</module>
 	</modules>
 
 	<properties>

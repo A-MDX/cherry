@@ -2,7 +2,7 @@ package com.madx.cherry.core.wechat.web;
 
 import com.madx.cherry.core.wechat.bean.Result;
 import com.madx.cherry.core.wechat.bean.XmlMsg;
-import com.madx.cherry.core.wechat.common.WechatConfig;
+import com.madx.cherry.core.wechat.common.WechatConfigUtil;
 import com.madx.cherry.core.wechat.service.WechatService;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -10,10 +10,7 @@ import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +29,7 @@ public class ReceiveWechatController {
     private static Logger logger = LoggerFactory.getLogger(ReceiveWechatController.class);
 
     @Autowired
-    private WechatConfig wechatConfig;
+    private WechatConfigUtil wechatConfigUtil;
 
     @Autowired
     private WechatService wechatService;
@@ -70,7 +67,6 @@ public class ReceiveWechatController {
 
         String returnStr = wechatService.distributeMsg(msg);
 
-
         System.out.println("response :\n"+returnStr);
         response.setContentType("text/html");
         response.setCharacterEncoding("utf-8");
@@ -80,9 +76,9 @@ public class ReceiveWechatController {
         return "success";
     }
     
-    @RequestMapping(value = "dailyMessage", method = RequestMethod.GET)
-    public Result getDailyMessage(@RequestParam(name = "query", required = false) String query){
-        return wechatService.getDailyMessage(query);
+    @RequestMapping(value = "dailyMessage/{token}", method = RequestMethod.GET)
+    public String getDailyMessage(@PathVariable(name = "token") String token){
+        return wechatService.getDailyMessage(token);
     }
 
     /**
@@ -101,7 +97,7 @@ public class ReceiveWechatController {
         System.out.println("-----------------------开始校验------------------------");
         //排序
         //此处TOKEN即我们刚刚所填的token
-        String sortString = sort(wechatConfig.getToken(), timestamp, nonce);
+        String sortString = sort(wechatConfigUtil.getToken(), timestamp, nonce);
         //加密
         String myString = sha1(sortString);
         //校验

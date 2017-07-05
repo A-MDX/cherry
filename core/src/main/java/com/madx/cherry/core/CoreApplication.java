@@ -19,9 +19,6 @@ public class CoreApplication implements CommandLineRunner {
 	public static void main(String[] args) {
 		SpringApplication.run(CoreApplication.class, args);
 	}
-
-	@Autowired
-	private MongoDataDao mongoDataDao;
 	
 	@Override
 	public void run(String... args) throws Exception {
