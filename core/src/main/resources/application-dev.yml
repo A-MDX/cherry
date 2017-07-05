@@ -52,3 +52,5 @@ msg:
     database: test
     collection:
       daily: daily
+  dailyImage:
+    default: http://ww1.sinaimg.cn/bmiddle/8ea820f9ly1fh87lbyzkdj20nq0zk434.jpg

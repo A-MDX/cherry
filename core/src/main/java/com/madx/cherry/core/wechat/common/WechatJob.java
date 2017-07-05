@@ -16,19 +16,14 @@ import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by A-mdx on 2017/6/29.
@@ -47,6 +42,9 @@ public class WechatJob {
     private WechatMsgDao wechatMsgDao;
     @Autowired
     private SysUserDao userDao;
+    
+    @Value("${msg.dailyImage.default}")
+    private String dailyImageUrl;
     
 
     /**
@@ -69,14 +67,14 @@ public class WechatJob {
         });
 
 
-        System.out.println("----------------------------------------end downloadFile-----------------------------------");
+        System.out.println("------------------------------end downloadFile--------------------------------");
         System.out.println("------------------------------------------------------------------------------");
     }
     
-    
-    public void gendailyMessage(){
+    @Scheduled(cron = "0/30 * * * * *")
+    public void genDailyMessage(){
         System.out.println("------------------------------------------------------------------------------");
-        System.out.println("--------------------------------------start gendailyMessage -----------------------------------");
+        System.out.println("--------------------------start genDailyMessage ------------------------------");
 
         // 1.寻找存储的数据，若没有，则继续走下去
         MongoCollection<Document> collection = mongoClient.getDatabase("test").getCollection("daily");
@@ -85,7 +83,13 @@ public class WechatJob {
         localDate = localDate.minusDays(1);
         String yesterday = localDate.format(DateTimeFormatter.ISO_DATE);
 
-        FindIterable<Document> iterable = collection.find(new Document("date", yesterday).append("status", CommonCode.VALID_TRUE));
+        Document query = new Document("name", yesterday).append("status", CommonCode.VALID_TRUE);
+//        System.out.println("query mongo: "+query.toJson());
+        FindIterable<Document> iterable = collection.find(query);
+//        Iterator<Document> iterator = iterable.iterator();
+//        while (iterator.hasNext()){
+//            list.add(iterator.next());
+//        }
         iterable.into(list);
         if (list.size() > 0){
             logger.info("已经存在了需要的数据，不需要在跑数据库加数据了。");
@@ -95,18 +99,25 @@ public class WechatJob {
         List<SysUserPO> users = userDao.findByStatus(CommonCode.VALID_TRUE);
 
         // 3.查询数据列表，开始拼装
-        String time2 = yesterday+" 23:59:59";
+        
+        Date date1 = Date.from(localDate.atTime(LocalTime.MIN).atZone(ZoneId.systemDefault()).toInstant());
+        Date date2 = Date.from(localDate.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant());
+        
         Date date = new Date();
         users.forEach(u -> {
-            List<WechatMsgPO> msgPOs = wechatMsgDao.findByUserAndTimeBetween(u.getLoginName(), yesterday, time2);
+            List<WechatMsgPO> msgPOs = wechatMsgDao.findByUserAndTimeBetween(u.getLoginName(), date1, date2);
             Document dailyMsg = new Document();
             dailyMsg.append("name", yesterday).append("status", CommonCode.VALID_TRUE).append("user", u.getLoginName());
             dailyMsg.append("creationTime", date);
+      
+            final StringBuilder description = new StringBuilder();
+            final String[] picUrl = {dailyImageUrl};
+            
             List<Document> data = new ArrayList<>();
+
             msgPOs.forEach(m -> {
                 Document item = new Document();
-                //todo 准备新增两个字段 看 msg.json
-
+ 
                 // 4.生成时间
                 Instant instant = m.getTime().toInstant();
                 LocalDateTime time = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
@@ -122,6 +133,10 @@ public class WechatJob {
                         String msgData = m.getData();
                         msgList.addAll(Arrays.asList(msgData.split("\n")));
                         item.append("message", msgList);
+                        
+                        // for description
+                        description.append(m.getData());
+                        
                         break;
                     case CommonCode.WECHAT_MSG_TYPE_IMAGE:
                         item.append("type", "image");
@@ -130,8 +145,14 @@ public class WechatJob {
                         if (jsonStr.contains("{")){
                             BasicDBObject json = (BasicDBObject) JSON.parse(jsonStr);
                             item.append("url", json.get("url"));
+                            
+                            // picUrl
+                            picUrl[0] = json.getString("url");
                         }else {
                             item.append("url", jsonStr);
+
+                            // picUrl
+                            picUrl[0] = jsonStr;
                         }
 
                         break;
@@ -142,12 +163,23 @@ public class WechatJob {
                 data.add(item);
             });
             dailyMsg.append("data", data);
+            
+            description.append("...讲真，昨天的我好像没写。");
+            int length = description.length();
+            String description_str = description.toString();
+            if (length > 35){
+                description_str = description.substring(0, 35);
+                description_str += "...";
+            }
+            dailyMsg.append("description", description_str)
+                    .append("picUrl", picUrl[0]);
+            
             // 6.保存至数据库
             collection.insertOne(dailyMsg);
 
         });
 
-        System.out.println("----------------------------------------end gendailyMessage-----------------------------------");
+        System.out.println("-----------------------------end genDailyMessage------------------------------");
         System.out.println("------------------------------------------------------------------------------");
     }
     
@@ -183,12 +215,11 @@ public class WechatJob {
      */
 
     public static void main(String... args){
-        Instant instant = Instant.now();
-        LocalDateTime time = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
-
-        String timeStr = time.format(DateTimeFormatter.ofPattern("HH:mm"));
-        System.out.println(timeStr);
-
+        LocalDate localDate = LocalDate.now();
+        Date date1 = Date.from(localDate.atTime(LocalTime.MIN).atZone(ZoneId.systemDefault()).toInstant());
+        Date date2 = Date.from(localDate.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant());
+        System.out.println(date1);
+        System.out.println(date2);
     }
 
     // fC9Ne1AagOlgc2o7_21ADQvGJ4tH41HaQ5xF8PSPe8EK_OCQFufIdqAH46JRO0tJ_dPzo0M27BTuPFE6V8gyLzPUaI_drVW-zvX1rgnUZRc2mK0On3Iz6eMpjWJhq5zbSRUgADAVUX

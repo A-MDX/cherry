@@ -5,6 +5,7 @@ import com.madx.cherry.core.wechat.bean.WechatMsgPO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,5 +15,5 @@ public interface WechatMsgDao extends JpaRepository<WechatMsgPO, Long> {
 
     List<WechatMsgPO> findByUserAndStatusAndType(String user, Integer status, Integer type, Pageable pageable);
 
-    List<WechatMsgPO> findByUserAndTimeBetween(String user, String time1, String time2);
+    List<WechatMsgPO> findByUserAndTimeBetween(String user, Date time1, Date time2);
 }
