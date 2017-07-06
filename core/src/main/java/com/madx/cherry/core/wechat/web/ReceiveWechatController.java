@@ -73,7 +73,7 @@ public class ReceiveWechatController {
         return "success";
     }
     
-    @RequestMapping(value = "dailyMessage/{token}", method = RequestMethod.GET)
+    @RequestMapping(value = "${wechat.bindAPI}"+"/dailyMessage/{token}", method = RequestMethod.GET)
     public String getDailyMessage(@PathVariable(name = "token") String token){
         return wechatService.getDailyMessage(token);
     }

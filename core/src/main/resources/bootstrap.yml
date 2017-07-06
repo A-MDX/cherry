@@ -5,7 +5,6 @@ spring:
     active: dev
   cloud:
     config:
-      enabled: true
       profile: dev
       uri: http://localhost:7001
 

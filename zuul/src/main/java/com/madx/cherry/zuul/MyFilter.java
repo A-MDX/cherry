@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created by A-mdx on 2017/6/11.
  */
@@ -32,6 +34,13 @@ public class MyFilter extends ZuulFilter {
 
     @Override
     public boolean shouldFilter() {
+        RequestContext context = RequestContext.getCurrentContext();
+        HttpServletRequest request = context.getRequest();
+        String path = request.getRequestURI();
+        logger.info("getRequestURI: "+path);
+        if (path.contains("wechat/apakfn")){
+            return false;
+        }
         return true;
     }
 

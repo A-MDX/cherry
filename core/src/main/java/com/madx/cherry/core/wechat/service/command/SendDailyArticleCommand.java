@@ -9,6 +9,8 @@ import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -31,8 +33,11 @@ public class SendDailyArticleCommand implements CommandExecute {
 
     @Autowired
     private CommandExecuteUtil executeUtil;
+    @Value("${wechat.bindUrl}")
+    private String bindUrl;
     
 
+    @Async
     @Override
     public void execute(XmlMsg msg, SysUserPO userPO) {
 
@@ -45,7 +50,8 @@ public class SendDailyArticleCommand implements CommandExecute {
         
         // 寻找昨天的数据
         LocalDate yesterday = LocalDate.now().minusDays(1);
-        MongoCollection<Document> collection = executeUtil.getMongoClient().getDatabase(executeUtil.getDatabase()).getCollection(executeUtil.getCollectionDaily());
+        MongoCollection<Document> collection = executeUtil.getMongoClient()
+                .getDatabase(executeUtil.getDatabase()).getCollection(executeUtil.getCollectionDaily());
         Document query = new Document("name", yesterday.format(DateTimeFormatter.ISO_DATE))
                 .append("user", loginName).append("status", CommonCode.VALID_TRUE);
         Document yesterdayDaily = collection.find(query).first();
@@ -78,7 +84,7 @@ public class SendDailyArticleCommand implements CommandExecute {
          */
         
         // todo 域名问题
-        String url = "http://a-mdx.iask.in/wechat/daily.html#"+token;
+        String url = bindUrl + "wechat/daily.html#"+token;
         article.append("url", url);
         
         json.append("news", new BasicDBObject("articles", Collections.singletonList(article)));

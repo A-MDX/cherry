@@ -87,13 +87,14 @@ public class WechatService {
     }
 
     private String commandRun(int command, XmlMsg msg, SysUserPO userPO) {
-        final CommandExecute[] execute = {null};
+        
+        String beanName = null;
         switch (command){
             case 0:
                 break;
             case 1:
                 // 执行一个发送文章的请求
-                execute[0] = new SendDailyArticleCommand();
+                beanName = "sendDailyArticleCommand";
                 break;
             case 2:
             case 3:
@@ -105,10 +106,11 @@ public class WechatService {
             case 9:
 
         }
-        if (execute[0] != null){
+        if (beanName != null){
+            String finalBeanName = beanName;
             taskExecutor.execute(() -> {
-                execute[0] = SpringContextUtil.getBean("sendDailyArticleCommand", SendDailyArticleCommand.class);
-                execute[0].execute(msg, userPO);
+                CommandExecute execute = SpringContextUtil.getBean(finalBeanName, SendDailyArticleCommand.class);
+                execute.execute(msg, userPO);
             });
         }
         

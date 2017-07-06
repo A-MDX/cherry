@@ -19,11 +19,6 @@ public class HiController {
     public String hi(){
         return "Hi, Mr.Ma.";
     }
-
-    @RequestMapping(value = "he", method = RequestMethod.GET)
-    public String he(){
-        
-        return "Hi, Mr.Ma."+"\n "+ wechatConfigUtil;
-    }
+    
 
 }
