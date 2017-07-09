@@ -104,6 +104,7 @@ public class WechatUtil {
             return Optional.ofNullable((BasicDBObject) JSON.parse(result.toString()));
         } catch (IOException e) {
             e.printStackTrace();
+            logger.error("发消息失败了。", e);
         }
         return null;
     }

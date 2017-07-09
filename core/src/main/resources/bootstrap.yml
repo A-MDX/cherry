@@ -1,11 +1,10 @@
+
 spring:
   application:
     name: core
-  profiles:
-    active: dev
   cloud:
     config:
-      profile: dev
+#      profile: ${spring.profiles.active}
       uri: http://localhost:7001
 
 ---

@@ -32,7 +32,7 @@ public class ReceiveWechatController {
 
     @Autowired
     private WechatService wechatService;
-
+    
     /**
      * 微信核心服务，全靠这里处理消息
      * @param request
@@ -72,7 +72,12 @@ public class ReceiveWechatController {
       
         return "success";
     }
-    
+
+    /**
+     * 直接通过 token 获取前一天的信息
+     * @param token
+     * @return
+     */
     @RequestMapping(value = "${wechat.bindAPI}"+"/dailyMessage/{token}", method = RequestMethod.GET)
     public String getDailyMessage(@PathVariable(name = "token") String token){
         return wechatService.getDailyMessage(token);

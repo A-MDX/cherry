@@ -45,7 +45,14 @@ public class WechatJob {
     
     @Value("${msg.dailyImage.default}")
     private String dailyImageUrl;
-    
+
+    @Value("${msg.mongo.database}")
+    private String mongoDb;
+
+    @Value("${msg.mongo.collection.daily}")
+    private String collectionDaily;
+
+
 
     /**
      * 下载文件至本地
@@ -67,21 +74,6 @@ public class WechatJob {
             }
         });
 
-        /*
-        {
-    "touser": "oEYIP0wamw-fSnN103-JYGN5eHq8",
-    "msgtype": "news",
-    "news": [
-        {
-            "title": "2017年 07月 05日",
-            "description": "...讲真，昨天的我好像没写。",
-            "picurl": "http://ww1.sinaimg.cn/bmiddle/8ea820f9ly1fh87lbyzkdj20nq0zk434.jpg",
-            "url": "http://a-mdx.iask.in/wechat/daily.html#f30c76589678"
-        }
-    ]
-}
-         */
-
         logger.info("------------------------------end downloadFile--------------------------------");
         logger.info("------------------------------------------------------------------------------");
     }
@@ -93,7 +85,7 @@ public class WechatJob {
         logger.info("--------------------------start genDailyMessage ------------------------------");
 
         // 1.寻找存储的数据，若没有，则继续走下去
-        MongoCollection<Document> collection = mongoClient.getDatabase("test").getCollection("daily");
+        MongoCollection<Document> collection = mongoClient.getDatabase(mongoDb).getCollection(collectionDaily);
         List<Document> list = new ArrayList<>();
         LocalDate localDate = LocalDate.now();
         localDate = localDate.minusDays(1);
@@ -195,6 +187,6 @@ public class WechatJob {
         logger.info("-----------------------------end genDailyMessage------------------------------");
         logger.info("------------------------------------------------------------------------------");
     }
-
+    
 
 }

@@ -40,6 +40,9 @@ public class SendDailyArticleCommand implements CommandExecute {
     @Async
     @Override
     public void execute(XmlMsg msg, SysUserPO userPO) {
+        
+        logger.info("-----------------------------------------------------------------");
+        logger.info("  执行命令： 发送昨天的日记  ");
 
         String loginName = userPO.getLoginName();
         BasicDBObject json = new BasicDBObject();

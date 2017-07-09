@@ -35,7 +35,11 @@ public class WechatService {
     private SysUserDao userDao;
     @Autowired
     private SimpleAsyncTaskExecutor taskExecutor;
-    
+
+    /**
+     * 注册一个简单的 任务 线程池
+     * @return
+     */
     @Bean
     public SimpleAsyncTaskExecutor getTaskExecutor(){
         return new SimpleAsyncTaskExecutor();
@@ -109,7 +113,7 @@ public class WechatService {
         if (beanName != null){
             String finalBeanName = beanName;
             taskExecutor.execute(() -> {
-                CommandExecute execute = SpringContextUtil.getBean(finalBeanName, SendDailyArticleCommand.class);
+                CommandExecute execute = SpringContextUtil.getBean(finalBeanName);
                 execute.execute(msg, userPO);
             });
         }
@@ -120,7 +124,6 @@ public class WechatService {
 
     /**
      * 获取前一天的消息
-     * @param date
      * @return
      */
     public String getDailyMessage(String token) {
