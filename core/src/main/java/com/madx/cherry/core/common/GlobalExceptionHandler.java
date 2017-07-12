@@ -31,12 +31,28 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public String wechatExceptionHandle(HttpServletRequest request, WechatException e, HttpServletResponse response){
         XmlMsg msg = e.getXmlMsg();
+
         StringBuilder returnStr = new StringBuilder("<xml>\n");
         returnStr.append("<ToUserName><![CDATA["+msg.getFromUserName()+"]]></ToUserName>\n");
         returnStr.append("<FromUserName><![CDATA["+msg.getToUserName()+"]]></FromUserName>\n");
         returnStr.append("<CreateTime>"+(new Date().getTime())/1000+"</CreateTime>\n");
-        returnStr.append("<MsgType><![CDATA[text]]></MsgType>\n");
-        returnStr.append("<Content><![CDATA[服务器发生了点错误，哎 "+e.getMessage()+"]]></Content>");
+        if ("news".equals(msg.getMsgType())){
+            returnStr.append("<MsgType><![CDATA[news]]></MsgType>");
+            returnStr.append("<ArticleCount>1</ArticleCount>");
+            returnStr.append("<Articles>");
+            returnStr.append("<item>");
+            returnStr.append("<Title><![CDATA["+msg.getTitle()+"]]></Title> ");
+            returnStr.append("<Description><![CDATA["+msg.getDescription()+"]]></Description>");
+            returnStr.append("<PicUrl><![CDATA["+msg.getPicUrl()+"]]></PicUrl>");
+            returnStr.append("<Url><![CDATA["+msg.getUrl()+"]]></Url>");
+            returnStr.append("</item>\n" +
+                    "</Articles>");
+        }else {
+            returnStr.append("<MsgType><![CDATA[text]]></MsgType>\n");
+            returnStr.append("<Content><![CDATA[服务器可能发生了点错误？哎 "+e.getMessage()+"]]></Content>");
+        }
+
+
         returnStr.append("</xml>");
         
         response.setContentType("text/xml");

@@ -7,15 +7,28 @@ import com.madx.cherry.core.common.dao.SysUserDao;
 import com.madx.cherry.core.common.entity.SysUserPO;
 import com.madx.cherry.core.common.util.SpringContextUtil;
 import com.madx.cherry.core.wechat.bean.XmlMsg;
+import com.madx.cherry.core.wechat.common.WechatException;
 import com.madx.cherry.core.wechat.common.WechatUtil;
 import com.madx.cherry.core.wechat.service.command.CommandExecute;
+import com.madx.cherry.core.wechat.service.command.CommandExecuteUtil;
 import com.madx.cherry.core.wechat.service.command.SendDailyArticleCommand;
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -35,6 +48,13 @@ public class WechatService {
     private SysUserDao userDao;
     @Autowired
     private SimpleAsyncTaskExecutor taskExecutor;
+    @Autowired
+    private CommandExecuteUtil executeUtil;
+
+    public static final String WECHAT_DAILY_PROFIX = "wechat.daily.";
+    @Value("${wechat.bindUrl}")
+    private String bindUrl;
+
 
     /**
      * 注册一个简单的 任务 线程池
@@ -112,6 +132,8 @@ public class WechatService {
         }
         if (beanName != null){
             String finalBeanName = beanName;
+            // 不要异步了，直接 exception 处理出去
+            genTextHtml(msg, userPO);
             taskExecutor.execute(() -> {
                 CommandExecute execute = SpringContextUtil.getBean(finalBeanName);
                 execute.execute(msg, userPO);
@@ -120,6 +142,58 @@ public class WechatService {
         
 
         return "success";
+    }
+
+    public void genTextHtml(XmlMsg msg, SysUserPO userPO){
+        logger.info("-----------------------------------------------------------------");
+        logger.info("  执行命令： 发送昨天的日记   ");
+
+        String loginName = userPO.getLoginName();
+
+        // 寻找昨天的数据
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        MongoCollection<Document> collection = executeUtil.getMongoClient()
+                .getDatabase(executeUtil.getDatabase()).getCollection(executeUtil.getCollectionDaily());
+        Document query = new Document("name", yesterday.format(DateTimeFormatter.ISO_DATE))
+                .append("user", loginName).append("status", CommonCode.VALID_TRUE);
+        Document yesterdayDaily = collection.find(query).first();
+        // ？没有的话，现在建立？算了，麻烦
+        if (yesterdayDaily == null || yesterdayDaily.isEmpty()){
+            // 发空消息
+            msg.setMsgType("text");
+            msg.setContent("不知为何，咩有生成数据");
+
+            throw new WechatException("不知为何，咩有生成数据", msg);
+        }
+
+        msg.setMsgType("news");
+        msg.setTitle(yesterday.format(DateTimeFormatter.ofPattern("yyyy年 MM月 dd日")));
+        msg.setPicUrl(yesterdayDaily.get("picUrl").toString());
+        msg.setDescription(yesterdayDaily.get("description").toString());
+
+        // 生成 url + token
+        String token = UUID.randomUUID().toString();
+        token = token.replace("-", "");
+        token = token.substring(0, 12);
+
+        executeUtil.getRedisDao().addVal(WECHAT_DAILY_PROFIX+token, yesterdayDaily.toJson(), 22, TimeUnit.HOURS);
+
+        // 使用hash
+        /*
+        window.location.hash这个属性可读可写。读取时，可以用来判断网页状态是否改变；写入时，则会在不重载网页的前提下，创造一条访问历史记录。
+        #代表网页中的一个位置。其右面的字符，就是该位置的标识符。比如，http://www.example.com/index.html#print就代表网页index.html的print位置。浏览器读取这个URL后，会自动将print位置滚动至可视区域。
+　　为网页位置指定标识符，有两个方法。一是使用锚点，比如<a name="print"></a>，二是使用id属性，比如<div id="print">。
+         */
+
+        // todo 域名问题
+        String url = bindUrl + "wechat/daily.html#"+token;
+
+        msg.setUrl(url);
+
+        logger.info("ã aaa啊啊啊啊啊啊啊啊啊啊啊啊啊  啊啊啊啊啊啊啊啊啊啊");
+        logger.info("闪开，我要抛异常了。");
+
+        throw new WechatException("", msg);
     }
 
     /**
