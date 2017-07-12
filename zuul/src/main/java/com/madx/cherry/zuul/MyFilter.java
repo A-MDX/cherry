@@ -40,6 +40,9 @@ public class MyFilter extends ZuulFilter {
         logger.info("getRequestURI: "+path);
         if (path.contains("wechat/apakfn")){
             return false;
+        }else if (path.endsWith(".html") || path.endsWith(".js") || path.endsWith(".css")){
+            // 静态资源就算了
+            return false;
         }
         return true;
     }
