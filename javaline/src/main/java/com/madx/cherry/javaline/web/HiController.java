@@ -3,10 +3,9 @@ package com.madx.cherry.javaline.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * Created by A-mdx on 2017/6/11.
@@ -27,6 +26,14 @@ public class HiController {
         logger.error("Hi, someone come here.");
         logger.error("Hello "+name+", I am "+appName+" from "+port+".");
         return "Hello "+name+", I am "+appName+" from "+port+".";
+    }
+
+    @RequestMapping(value = "api",method = RequestMethod.POST, consumes = "application/json")
+    public Map<String, Object> receive(@RequestParam(name = "token", required = false) String token
+            , @RequestBody Map<String, Object> json){
+        System.out.println("token:"+token);
+        json.forEach((k,v) -> System.out.println(k+" : "+v));
+        return json;
     }
     
 }

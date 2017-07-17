@@ -130,10 +130,15 @@ public class WechatService {
             case 9:
 
         }
+
+        // 不要异步了，直接 exception 处理出去
+        genTextHtml(msg, userPO, command);
+        // 下面的基本走不到了。
+
         if (beanName != null){
             String finalBeanName = beanName;
-            // 不要异步了，直接 exception 处理出去
-            genTextHtml(msg, userPO);
+
+
             taskExecutor.execute(() -> {
                 CommandExecute execute = SpringContextUtil.getBean(finalBeanName);
                 execute.execute(msg, userPO);
@@ -144,21 +149,21 @@ public class WechatService {
         return "success";
     }
 
-    public void genTextHtml(XmlMsg msg, SysUserPO userPO){
+    public void genTextHtml(XmlMsg msg, SysUserPO userPO, int day){
         logger.info("-----------------------------------------------------------------");
-        logger.info("  执行命令： 发送昨天的日记   ");
+        logger.info("  执行命令： 发送 那些天 的日记   ");
 
         String loginName = userPO.getLoginName();
 
         // 寻找昨天的数据
-        LocalDate yesterday = LocalDate.now().minusDays(1);
+        LocalDate yesterday = LocalDate.now().minusDays(day);
         MongoCollection<Document> collection = executeUtil.getMongoClient()
                 .getDatabase(executeUtil.getDatabase()).getCollection(executeUtil.getCollectionDaily());
         Document query = new Document("name", yesterday.format(DateTimeFormatter.ISO_DATE))
                 .append("user", loginName).append("status", CommonCode.VALID_TRUE);
-        Document yesterdayDaily = collection.find(query).first();
+        Document daily = collection.find(query).first();
         // ？没有的话，现在建立？算了，麻烦
-        if (yesterdayDaily == null || yesterdayDaily.isEmpty()){
+        if (daily == null || daily.isEmpty()){
             // 发空消息
             msg.setMsgType("text");
             msg.setContent("不知为何，咩有生成数据");
@@ -168,15 +173,15 @@ public class WechatService {
 
         msg.setMsgType("news");
         msg.setTitle(yesterday.format(DateTimeFormatter.ofPattern("yyyy年 MM月 dd日")));
-        msg.setPicUrl(yesterdayDaily.get("picUrl").toString());
-        msg.setDescription(yesterdayDaily.get("description").toString());
+        msg.setPicUrl(daily.get("picUrl").toString());
+        msg.setDescription(daily.get("description").toString());
 
         // 生成 url + token
         String token = UUID.randomUUID().toString();
         token = token.replace("-", "");
         token = token.substring(0, 12);
 
-        executeUtil.getRedisDao().addVal(WECHAT_DAILY_PROFIX+token, yesterdayDaily.toJson(), 22, TimeUnit.HOURS);
+        executeUtil.getRedisDao().addVal(WECHAT_DAILY_PROFIX+token, daily.toJson(), 22, TimeUnit.HOURS);
 
         // 使用hash
         /*
