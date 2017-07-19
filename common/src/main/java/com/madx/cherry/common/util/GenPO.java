@@ -29,13 +29,13 @@ public class GenPO {
                 // driver
                 "com.mysql.jdbc.Driver",
                 //url
-                "jdbc:mysql://localhost:3306/cherry?useUnicode=true&characterEncoding=utf-8" ,
+                "jdbc:mysql://39.108.79.64:9306/test?useUnicode=true&characterEncoding=utf-8" ,
                 //userName
-                "root" ,
+                "madx" ,
                 //password
-                "9295" ,
+                "1qazxsw2" ,
                 //tableName,
-                "sys_user",
+                "sys_user;line_log;line_project",
                 // + ";tm_account;tt_account_change;ti_chanj_callback_status;tm_account_type;ti_chanj_get_status",
                 //tableMatchPattern
                 "false",
