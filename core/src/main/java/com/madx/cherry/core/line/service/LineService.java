@@ -134,8 +134,13 @@ public class LineService {
         for (LineProjectPO p : projects) {
             file += p.getFile();
             line += p.getLine();
-            // todo .......
+
+            Document item = new Document(p.getProject()
+                    , new Document("file", p.getFile()).append("line", p.getLine())
+            );
+            list.add(item);
         }
+        info.append("sumLine", line).append("sumFile", file);
 
         return info;
     }
