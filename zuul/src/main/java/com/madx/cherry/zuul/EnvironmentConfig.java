@@ -1,4 +1,4 @@
-package com.madx.cherry.core.common;
+package com.madx.cherry.zuul;
 
 /**
  * 环境剖面 激活 与 选择
