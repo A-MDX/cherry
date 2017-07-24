@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
                     "</Articles>");
         }else {
             returnStr.append("<MsgType><![CDATA[text]]></MsgType>\n");
-            returnStr.append("<Content><![CDATA[服务器可能发生了点错误？哎 "+e.getMessage()+"]]></Content>");
+            returnStr.append("<Content><![CDATA["+e.getMessage()+"]]></Content>");
         }
 
 

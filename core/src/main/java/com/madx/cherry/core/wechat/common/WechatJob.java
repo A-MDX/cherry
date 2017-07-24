@@ -52,6 +52,9 @@ public class WechatJob {
     @Value("${msg.mongo.collection.daily}")
     private String collectionDaily;
 
+    @Value("${msg.imageUrl}")
+    private String imageUrlPrefix;
+
 
 
     /**
@@ -149,10 +152,18 @@ public class WechatJob {
                         String jsonStr = m.getData();
                         if (jsonStr.contains("{")){
                             BasicDBObject json = (BasicDBObject) JSON.parse(jsonStr);
-                            item.append("url", json.get("url"));
+                            // 开始处理
+                            String mediaId = json.getString("mediaId");
+                            MongoDataPO mongoDataPO = mongoDataDao.findByDataId(mediaId);
+                            String path = mongoDataPO.getPath();
+                            int index = path.lastIndexOf("/");
+                            path = path.substring(index);
+                            String filePath = imageUrlPrefix + path+"/"+mongoDataPO.getName();
+
+                            item.append("url", filePath);
                             
                             // picUrl
-                            picUrl[0] = json.getString("url");
+                            picUrl[0] = filePath;
                         }else {
                             item.append("url", jsonStr);
 
@@ -183,6 +194,8 @@ public class WechatJob {
             collection.insertOne(dailyMsg);
 
         });
+
+        // /home/madx/data/image/
 
         logger.info("-----------------------------end genDailyMessage------------------------------");
         logger.info("------------------------------------------------------------------------------");

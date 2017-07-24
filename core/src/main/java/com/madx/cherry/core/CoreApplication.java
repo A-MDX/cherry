@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableTransactionManagement
-//@EnableEurekaClient
-public class CoreApplication implements CommandLineRunner {
+@EnableEurekaClient
+public class CoreApplication {
 	
 	private static Logger logger = LoggerFactory.getLogger(CoreApplication.class);
 
