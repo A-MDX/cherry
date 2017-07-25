@@ -6,7 +6,7 @@ package com.madx.cherry.core.common;
  */
 public class EnvironmentConfig {
     // 激活的剖面环境变量名称
-    private static final String ACTIVE_PROFILE_ENV = " ";
+    private static final String ACTIVE_PROFILE_ENV = "madx_java_spring_active";
     
     // 测试环境
     public static final String DEFAULT_ACTIVE = "dev";
