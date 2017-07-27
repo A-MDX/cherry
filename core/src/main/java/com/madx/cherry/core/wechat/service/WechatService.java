@@ -154,16 +154,19 @@ public class WechatService {
 
     public void genLineText(XmlMsg msg, SysUserPO userPO){
         Document info = lineService.getUserInfo(userPO.getLoginName());
+
+        logger.info("genLineText: " + info.toJson());
+
         // 这个文字怎么排版？
         StringBuilder str = new StringBuilder(genFromChar('-', "", "", ""));
         str.append(genFromChar(info.getString("user"), "", ""));
         info.remove("user");
 
-        str.append(genFromChar("javaFile", info.get("javaFile").toString(), ""));
-        info.remove("javaFile");
+        str.append(genFromChar("sumFile", info.get("sumFile").toString(), ""));
+        info.remove("sumFile");
 
-        str.append(genFromChar("javaLine", info.get("javaLine").toString(), ""));
-        info.remove("javaLine");
+        str.append(genFromChar("sumLine", info.get("sumLine").toString(), ""));
+        info.remove("sumLine");
 
         str.append(genFromChar('=', "project", "files", "lines"));
         info.forEach((k, v) -> {
