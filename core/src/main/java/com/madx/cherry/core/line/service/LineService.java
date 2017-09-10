@@ -126,9 +126,8 @@ public class LineService {
     public Document getUserInfo(String userName){
         Document info = new Document();
         info.append("user", userName);
-        List<LineProjectPO> projects = projectDao.findByUserAndStatus(userName, CommonCode.VALID_TRUE);
-        info.append("userName", userName);
         List<LineProjectPO> projects = projectDao.findByUserAndStatus(userName, CommonCode.STATUS_YES_OR_VALID);
+        info.append("userName", userName);
 
         List<Document> list = new ArrayList<>();
         int file = 0;
