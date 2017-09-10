@@ -7,9 +7,12 @@
         <File>/home/madx/project/log/core/core.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <FileNamePattern>/home/madx/project/log/core/core.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>/home/madx/project/log/core/core.%d{yyyy-MM-dd}-%i.log</FileNamePattern>
             <!-- keep 30 days' worth of history -->
             <maxHistory>30</maxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>200MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
         <encoder>
             <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg %n</Pattern>

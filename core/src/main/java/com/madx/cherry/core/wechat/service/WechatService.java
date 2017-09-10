@@ -6,13 +6,13 @@ import com.madx.cherry.core.common.dao.RedisDao;
 import com.madx.cherry.core.common.dao.SysUserDao;
 import com.madx.cherry.core.common.entity.SysUserPO;
 import com.madx.cherry.core.common.util.SpringContextUtil;
+import com.madx.cherry.core.line.service.LineService;
 import com.madx.cherry.core.wechat.bean.XmlMsg;
 import com.madx.cherry.core.wechat.common.WechatException;
 import com.madx.cherry.core.wechat.common.WechatUtil;
 import com.madx.cherry.core.wechat.service.command.CommandExecute;
 import com.madx.cherry.core.wechat.service.command.CommandExecuteUtil;
 import com.madx.cherry.core.wechat.service.command.SendDailyArticleCommand;
-import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -25,8 +25,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -50,6 +48,8 @@ public class WechatService {
     private SimpleAsyncTaskExecutor taskExecutor;
     @Autowired
     private CommandExecuteUtil executeUtil;
+    @Autowired
+    private LineService lineService;
 
     public static final String WECHAT_DAILY_PROFIX = "wechat.daily.";
     @Value("${wechat.bindUrl}")
@@ -69,7 +69,7 @@ public class WechatService {
 
         // 先在这一层验证当前user 信息的合法性
         String openId = msg.getFromUserName();
-        SysUserPO userPO = userDao.findByOpenIdAndStatus(openId, CommonCode.VALID_TRUE);
+        SysUserPO userPO = userDao.findByOpenIdAndStatus(openId, CommonCode.STATUS_YES_OR_VALID);
         WechatUtil.isNullForMsg(userPO, msg, "没找到你的用户信息，或者你被注销了，要不你找管理员注册一个？");
 
         switch (msg.getMsgType()){
@@ -115,6 +115,8 @@ public class WechatService {
         String beanName = null;
         switch (command){
             case 0:
+                // if command == 0 , 返回 代码统计信息 , 通过异常抛出去
+                genLineText(msg, userPO);
                 break;
             case 1:
                 // 执行一个发送文章的请求
@@ -130,6 +132,7 @@ public class WechatService {
             case 9:
 
         }
+
 
         // 不要异步了，直接 exception 处理出去
         genTextHtml(msg, userPO, command);
@@ -149,6 +152,79 @@ public class WechatService {
         return "success";
     }
 
+    public void genLineText(XmlMsg msg, SysUserPO userPO){
+        Document info = lineService.getUserInfo(userPO.getLoginName());
+
+        logger.info("genLineText: " + info.toJson());
+
+        // 这个文字怎么排版？
+        StringBuilder str = new StringBuilder(genFromChar('-', "", "", ""));
+        str.append(genFromChar(info.getString("user"), "", ""));
+        info.remove("user");
+
+        str.append(genFromChar("sumFile", info.get("sumFile").toString(), ""));
+        info.remove("sumFile");
+
+        str.append(genFromChar("sumLine", info.get("sumLine").toString(), ""));
+        info.remove("sumLine");
+
+        str.append(genFromChar('=', "project", "files", "lines"));
+        info.forEach((k, v) -> {
+            Document doc = (Document) v;
+            str.append(genFromChar(k, doc.get("javaFile").toString(), doc.get("javaLine").toString()));
+        });
+
+        str.append(genFromChar('-', "", "", ""));
+
+        // 2. 准备把异常抛出去
+        throw new WechatException(str.toString(), msg);
+
+    }
+
+    public static void main(String... args){
+        System.out.println(genFromChar(' ', "madx", "123",  "123"));
+        System.out.println(genFromChar('=', "heheda", "123", "345"));
+        System.out.println(genFromChar('-', "mm", "123456", "345"));
+
+        System.out.println(genFromChar('-',"heheda", "aiya"));
+        System.out.println(genFromChar('-',"heheda", "aiya", "maya"));
+        System.out.println(genFromChar('-',"","", ""));
+
+    }
+
+
+    private static String genFromChar(String... words){
+        return genFromChar('-', words);
+    }
+
+
+    private static String genFromChar(char c, String... words){
+        char[] arr = new char[30];
+        // init
+        for (int i = 0; i < 30; i++) {
+            arr[i] = c;
+        }
+
+
+        int size = words.length;
+        int fen = 30/size;
+        for (int i = 0; i < size; i++) {
+            String word = words[i];
+            int middle = word.length()/2;
+            int start = fen * i + fen/2 - middle;
+            char[] brr = word.toCharArray();
+            for (int j = 0; j < brr.length; j++) {
+                arr[start++] = brr[j];
+            }
+
+            arr[fen*i] = '|';
+
+        }
+        arr[29] = '|';
+
+        return new String(arr)+"\n";
+    }
+
     public void genTextHtml(XmlMsg msg, SysUserPO userPO, int day){
         logger.info("-----------------------------------------------------------------");
         logger.info("  执行命令： 发送 那些天 的日记   ");
@@ -160,7 +236,7 @@ public class WechatService {
         MongoCollection<Document> collection = executeUtil.getMongoClient()
                 .getDatabase(executeUtil.getDatabase()).getCollection(executeUtil.getCollectionDaily());
         Document query = new Document("name", yesterday.format(DateTimeFormatter.ISO_DATE))
-                .append("user", loginName).append("status", CommonCode.VALID_TRUE);
+                .append("user", loginName).append("status", CommonCode.STATUS_YES_OR_VALID);
         Document daily = collection.find(query).first();
         // ？没有的话，现在建立？算了，麻烦
         if (daily == null || daily.isEmpty()){

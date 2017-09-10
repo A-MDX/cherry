@@ -13,4 +13,6 @@ public interface SysUserDao extends JpaRepository<SysUserPO, Integer>{
     SysUserPO findByOpenIdAndStatus(String openId, Integer status);
 
     List<SysUserPO> findByStatus(Integer status);
+
+    SysUserPO findByLoginNameAndStatus(String name, Integer status);
 }

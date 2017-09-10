@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>用户登录</title>
+    <link rel="stylesheet" type="text/css"
+          href="../static/css/bootstrap.css"
+          th:href="@{/css/bootstrap.css}" />
+    <script src="../static/js/jquery-1.11.2.js" type="text/javascript"
+        th:src="@{/js/jquery-1.11.2.js}"></script>
+
+    <style>
+        body{
+            margin-left:auto;
+            margin-right:auto;
+            margin-TOP:100PX;
+            width:20em;
+        }
+    </style>
+</head>
+<body>
+<form th:action="@{/login}" method="POST">
+    <!--下面是用户名输入框-->
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">@</span>
+        <input id="loginName" name="loginName" type="text" class="form-control" placeholder="用户名" aria-describedby="basic-addon1" />
+    </div>
+    <br />
+    <!--下面是密码输入框-->
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">@</span>
+        <input id="password" name="password" type="password" class="form-control" placeholder="密码" aria-describedby="basic-addon1" />
+    </div>
+    <br />
+    <!--下面是登陆按钮,包括颜色控制-->
+    <button type="submit" style="width:280px;" class="btn btn-default">登 录</button>
+</form>
+
+</body>
+<script>
+//    alert("呵呵哒");
+    $("#loginName").val("哎呀妈呀");
+
+</script>
+</html>

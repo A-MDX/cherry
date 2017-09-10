@@ -56,7 +56,7 @@ public class SendDailyArticleCommand implements CommandExecute {
         MongoCollection<Document> collection = executeUtil.getMongoClient()
                 .getDatabase(executeUtil.getDatabase()).getCollection(executeUtil.getCollectionDaily());
         Document query = new Document("name", yesterday.format(DateTimeFormatter.ISO_DATE))
-                .append("user", loginName).append("status", CommonCode.VALID_TRUE);
+                .append("user", loginName).append("status", CommonCode.STATUS_YES_OR_VALID);
         Document yesterdayDaily = collection.find(query).first();
         // ？没有的话，现在建立？算了，麻烦
         if (yesterdayDaily == null || yesterdayDaily.isEmpty()){

@@ -15,7 +15,15 @@ public class ZuulApplication {
 	public static void main(String[] args) {
 		logger.error("*********************************************************");
 		logger.error("now begin start....");
+		
+//		SpringApplication app = new SpringApplication(ZuulApplication.class);
+//
+//		app.setAdditionalProfiles(EnvironmentConfig.getActiveProfile());
+//
+//		app.run(args);
+
 		SpringApplication.run(ZuulApplication.class, args);
+		
 		logger.error("start over...");
 		logger.error("*********************************************************");
 	}
