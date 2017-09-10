@@ -56,6 +56,18 @@ public class JustCount {
             out.flush();
         }
         StringBuilder result = new StringBuilder();
+        if (connection.getResponseCode() != 200){
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream()))){
+                String temp;
+                while ((temp = in.readLine()) != null){
+                    result.append(temp);
+                }
+            }
+            System.out.println(result);
+            System.out.println("本次发送异常了。");
+            return;
+        }
+
         try(BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))){
             String temp;
             while ((temp = in.readLine()) != null){
