@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<!-- https://github.com/theborakompanioni/thymeleaf-extras-shiro -->
+<!--shiro 标签，用于使用下面那些，上面那个地址是文档。-->
+<head>
+    <meta charset="UTF-8" />
+    <title>首页</title>
+
+</head>
+<body>
+Hello, <shiro:principal/>, how are you today?
+<shiro:hasRole name="admin">
+    <p shiro:guest="">xxxx</p><br />
+    <br />I'm fine, 我拥有管理员角色--<span th:text="${username}"></span>
+</shiro:hasRole>
+</body>
+</html>

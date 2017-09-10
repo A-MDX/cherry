@@ -69,7 +69,7 @@ public class WechatService {
 
         // 先在这一层验证当前user 信息的合法性
         String openId = msg.getFromUserName();
-        SysUserPO userPO = userDao.findByOpenIdAndStatus(openId, CommonCode.VALID_TRUE);
+        SysUserPO userPO = userDao.findByOpenIdAndStatus(openId, CommonCode.STATUS_YES_OR_VALID);
         WechatUtil.isNullForMsg(userPO, msg, "没找到你的用户信息，或者你被注销了，要不你找管理员注册一个？");
 
         switch (msg.getMsgType()){
@@ -233,7 +233,7 @@ public class WechatService {
         MongoCollection<Document> collection = executeUtil.getMongoClient()
                 .getDatabase(executeUtil.getDatabase()).getCollection(executeUtil.getCollectionDaily());
         Document query = new Document("name", yesterday.format(DateTimeFormatter.ISO_DATE))
-                .append("user", loginName).append("status", CommonCode.VALID_TRUE);
+                .append("user", loginName).append("status", CommonCode.STATUS_YES_OR_VALID);
         Document daily = collection.find(query).first();
         // ？没有的话，现在建立？算了，麻烦
         if (daily == null || daily.isEmpty()){

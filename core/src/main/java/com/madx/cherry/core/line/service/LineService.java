@@ -53,7 +53,7 @@ public class LineService {
         String userName = (String) data.get("user");
         CommonUtil.validArgumentEmpty(userName, "用户名不可为空.");
 
-        SysUserPO user = userDao.findByLoginNameAndStatus(userName, CommonCode.VALID_TRUE);
+        SysUserPO user = userDao.findByLoginNameAndStatus(userName, CommonCode.STATUS_YES_OR_VALID);
         CommonUtil.validArgumentEmpty(user, "根据这个用户名查不到用户："+userName);
 
         data.remove("user");
@@ -76,7 +76,7 @@ public class LineService {
                     projectPO.setFile(file);
                     projectPO.setLine(line);
 
-                    projectPO.setStatus(CommonCode.VALID_TRUE);
+                    projectPO.setStatus(CommonCode.STATUS_YES_OR_VALID);
 
                     projectPO = projectDao.save(projectPO);
 
@@ -126,7 +126,7 @@ public class LineService {
     public Document getUserInfo(String userName){
         Document info = new Document();
         info.append("userName", userName);
-        List<LineProjectPO> projects = projectDao.findByUserAndStatus(userName, CommonCode.VALID_TRUE);
+        List<LineProjectPO> projects = projectDao.findByUserAndStatus(userName, CommonCode.STATUS_YES_OR_VALID);
 
         List<Document> list = new ArrayList<>();
         int file = 0;

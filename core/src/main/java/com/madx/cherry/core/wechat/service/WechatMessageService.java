@@ -69,7 +69,7 @@ public class WechatMessageService {
             redisDao.addVal(WECHAT_TEXT_MSG_PREFIX+user, 1+"", 3, TimeUnit.MINUTES);
         }else {
             // 需要启动融合机制了
-            msgPO = wechatMsgDao.findByUserAndStatusAndType(user, CommonCode.VALID_TRUE
+            msgPO = wechatMsgDao.findByUserAndStatusAndType(user, CommonCode.STATUS_YES_OR_VALID
                     , CommonCode.WECHAT_MSG_TYPE_TEXT
                     , new PageRequest(0, 1, new Sort(Sort.Direction.DESC, "time"))).get(0);
             msgPO.setData(msgPO.getData()+"\n"+msg.getContent());
@@ -128,7 +128,7 @@ public class WechatMessageService {
         mongoDataPO.setName(ldtime.format(DateTimeFormatter.ofPattern("dd~HH_mm_ss.SSS"))+"+"+genRandomNum()+".jpg"); 
         mongoDataPO.setDataUrl(msg.getPicUrl());
 
-        mongoDataPO.setStatus(CommonCode.VALID_TRUE);
+        mongoDataPO.setStatus(CommonCode.STATUS_YES_OR_VALID);
         mongoDataPO.setSaveLocal(false);
 
         mongoDataPO = mongoDataDao.save(mongoDataPO);
@@ -151,7 +151,7 @@ public class WechatMessageService {
     private WechatMsgPO initPO(final XmlMsg xmlMsg){
         WechatMsgPO msgPO = new WechatMsgPO();
         // init user 
-        SysUserPO userPO = sysUserDao.findByOpenIdAndStatus(xmlMsg.getFromUserName(), CommonCode.VALID_TRUE);
+        SysUserPO userPO = sysUserDao.findByOpenIdAndStatus(xmlMsg.getFromUserName(), CommonCode.STATUS_YES_OR_VALID);
         System.out.println("user:"+userPO);
 
         WechatUtil.isNullForMsg(userPO, xmlMsg, "查不到当前用户了。或许得先绑定一下。");
@@ -161,7 +161,7 @@ public class WechatMessageService {
         // init time
         msgPO.setTime(new Date(Long.parseLong(xmlMsg.getCreateTime()+"000")));
         
-        msgPO.setStatus(CommonCode.VALID_TRUE);
+        msgPO.setStatus(CommonCode.STATUS_YES_OR_VALID);
         
         return msgPO;
     }

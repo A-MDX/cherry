@@ -5,20 +5,14 @@ package com.madx.cherry.core.common;
  * Created by A-mdx on 2017/6/11.
  */
 public class CommonCode {
-       // 统计行数，大路径
-    public static final int JAVA_FILE_PATH = 1001;
-    public static final int JAVA_FILE_PATH_BIG = 10011002;
-    public static final int JAVA_FILE_PATH_SMALL = 10011001;
 
-    // 是否状态
-    public static final int STATUS = 1002;
-    public static final int STATUS_YES = 10021001;
-    public static final int STATUS_NO = 10021002;
 
-    // 有效无效状态
-    public static final int VALID = 1003;
-    public static final int VALID_TRUE = 10031001;
-    public static final int VALID_FALSE = 10031002;
+    /**
+     * 状态，有效与 无效，是或否
+     */
+    public static final int STATUS_YES_OR_VALID = 10011001;
+    public static final int STATUS_NO_OR_INVALID = 10011002;
+
 
     /**
      * 微信 消息类型模块

@@ -64,7 +64,7 @@ public class WechatJob {
     public void downloadFile(){
         logger.info("------------------------------------------------------------------------------");
         logger.info("------------------------------start downloadFile -----------------------------");
-        List<MongoDataPO> list = mongoDataDao.findBySaveLocalAndStatus(false, CommonCode.VALID_TRUE);
+        List<MongoDataPO> list = mongoDataDao.findBySaveLocalAndStatus(false, CommonCode.STATUS_YES_OR_VALID);
         logger.info("downloadFile size : "+list.size());
 
         list.forEach(k -> {
@@ -94,7 +94,7 @@ public class WechatJob {
         localDate = localDate.minusDays(1);
         String yesterday = localDate.format(DateTimeFormatter.ISO_DATE);
 
-        Document query = new Document("name", yesterday).append("status", CommonCode.VALID_TRUE);
+        Document query = new Document("name", yesterday).append("status", CommonCode.STATUS_YES_OR_VALID);
 
         FindIterable<Document> iterable = collection.find(query);
 
@@ -104,7 +104,7 @@ public class WechatJob {
             return;
         }
         // 2.遍历用户数组
-        List<SysUserPO> users = userDao.findByStatus(CommonCode.VALID_TRUE);
+        List<SysUserPO> users = userDao.findByStatus(CommonCode.STATUS_YES_OR_VALID);
 
         // 3.查询数据列表，开始拼装
         
@@ -115,7 +115,7 @@ public class WechatJob {
         users.forEach(u -> {
             List<WechatMsgPO> msgPOs = wechatMsgDao.findByUserAndTimeBetween(u.getLoginName(), date1, date2);
             Document dailyMsg = new Document();
-            dailyMsg.append("name", yesterday).append("status", CommonCode.VALID_TRUE).append("user", u.getLoginName());
+            dailyMsg.append("name", yesterday).append("status", CommonCode.STATUS_YES_OR_VALID).append("user", u.getLoginName());
             dailyMsg.append("creationTime", date);
       
             final StringBuilder description = new StringBuilder();

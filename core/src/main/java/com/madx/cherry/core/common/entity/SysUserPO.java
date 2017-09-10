@@ -45,8 +45,8 @@ private static final long serialVersionUID = 1L;
 	@Column(name="modifier")
 	private Integer modifier;
 
-	@Column(name="mofify_time")
-	private Date mofifyTime;
+	@Column(name="modify_time")
+	private Date modifyTime;
 
 	public Integer getStatus() {
 		return status;
@@ -136,13 +136,16 @@ private static final long serialVersionUID = 1L;
     	return this.modifier;
  	}
 
-	public void setMofifyTime(Date mofifyTime){
-    	this.mofifyTime = mofifyTime;
- 	}
+	public Date getModifyTime() {
+		return modifyTime;
+	}
 
-	public Date getMofifyTime(){
-    	return this.mofifyTime;
- 	}
+	public void setModifyTime(Date modifyTime) {
+		this.modifyTime = modifyTime;
+	}
 
+	public String getCredentialsSalt() {
+		return loginName+salt;
+	}
 } 
 
