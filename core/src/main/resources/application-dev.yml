@@ -1,0 +1,57 @@
+wechat:
+  token: qwertyuiiiiiiiiiiii12345678
+  url: http://a-mdx.iask.in/wechat/server
+  appID: wx55378b2a7eaa7a16
+  appsecret: 7e21d2375084101072729953c84a08d7
+  #  这个是绑定微信服务器的地址api
+  bindAPI: server
+  bindUrl: http://a-mdx.iask.in/
+---
+server:
+  port: 80
+
+---
+spring:
+  application:
+    name: core
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 9295
+    url: jdbc:mysql://localhost:3306/test?characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false
+    dbcp2:
+      max-idle: 50
+      max-wait-millis: 2000
+      min-idle: 5
+      time-between-eviction-runs-millis: 18800
+      test-while-idle: true
+      validation-query: SELECT 1
+      remove-abandoned-timeout: 180
+      remove-abandoned-on-borrow: true
+      test-on-borrow: false
+      initial-size: 5
+  jpa:
+    show-sql: true
+  data:
+    mongodb:
+      uri: mongodb://madx:9295@39.108.79.64:9717/test
+  redis:
+    host: localhost
+    port: 6379
+
+---
+# 最后的不加 斜杠 只有 这种斜杠才好使呀 / , 哎
+file:
+  save:
+   path: C://Users/A-mdx/Desktop
+
+---
+# 自定义存放数据库，表名 collection
+msg:
+  imageUrl: http://39.108.79.64/image
+  mongo:
+    database: cherry
+    collection:
+      daily: daily
+  dailyImage:
+    default: http://39.108.79.64/image/default.jpg

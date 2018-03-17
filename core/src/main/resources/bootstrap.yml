@@ -2,10 +2,10 @@
 spring:
   application:
     name: core
-  cloud:
-    config:
-#      profile: ${spring.profiles.active}
-      uri: http://localhost:8081
+#  cloud:
+#    config:
+##      profile: ${spring.profiles.active}
+#      uri: http://localhost:8081
 server:
   context-path:  /api
 
@@ -16,9 +16,10 @@ eureka:
     service-url:
       defaultZone: http://madx:1234@localhost:8761/eureka/
 
-
+---
 
 logging:
   config: classpath:logback-spring.xml
+
 
   

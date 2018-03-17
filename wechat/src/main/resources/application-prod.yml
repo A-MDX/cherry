@@ -1,0 +1,43 @@
+wechat:
+  token: qwertyuiiiiiiiiiiii12345678
+  url: http://39.108.79.64/api/wechat/server
+  appID: wx23bcc5768dfda5ad
+  appsecret: 58a123b0a79878b5404ab081de012007
+  #  这个是绑定微信服务器的地址api
+  bindAPI: apakfn
+  bindUrl: http://39.108.79.64/api/
+  EncodingAESKey: doycZw1YHrB0PhkKfAXZKXufFiBFeLrpIZOkFB3GOHe
+---
+server:
+  port: 8080
+
+---
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: madx
+    password: 1qazxsw2
+    url: jdbc:mysql://localhost:9306/cherry?characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false
+    dbcp2:
+      max-idle: 50
+      max-wait-millis: 2000
+      min-idle: 5
+      time-between-eviction-runs-millis: 18800
+      test-while-idle: true
+      validation-query: SELECT 1
+      remove-abandoned-timeout: 180
+      remove-abandoned-on-borrow: true
+      test-on-borrow: false
+      initial-size: 5
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  redis:
+    host: localhost
+    password: 9295
+    port: 9379
+
+
+
+

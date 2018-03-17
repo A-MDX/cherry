@@ -28,7 +28,7 @@ import java.util.*;
 /**
  * Created by A-mdx on 2017/6/29.
  */
-@EnableScheduling
+//@EnableScheduling
 @Component
 public class WechatJob {
 
