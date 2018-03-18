@@ -27,6 +27,9 @@ public class InitQuestionPo {
     
     private String text;
     
+    // 1: 有效， 0：无效
+    private Integer status = 1;
+    
     @JoinColumn(name = "question_id")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     /* 过滤条件
@@ -39,6 +42,14 @@ public class InitQuestionPo {
     // 默认创建时间
     private Date createTime = new Date();
 
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     public String getId() {
         return id;

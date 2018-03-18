@@ -1,35 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
     <meta charset="UTF-8">
     <title>列表</title>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <link rel="stylesheet" href="../css/weui.min.css"/>
+    <!--<script src="http://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js">-->
+    <!--</script>-->
+    <script src="../js/jquery-1.11.2.js"></script>
+    <style>
+        .page__hd {
+            padding: 40px;
+        }
+        .page__desc {
+            margin-top: 5px;
+            color: #888;
+            text-align: left;
+            font-size: 14px;
+        }
+        .page__title {
+            text-align: left;
+            font-size: 20px;
+            font-weight: 400;
+        }
+        .page__hd {
+            background-color: #f7f7f7;
+        }
+    </style>
 </head>
 <body>
-<h1 class="page__title">问题分页</h1>
 
-<div class="page__bd">
-    <div class="weui-panel weui-panel_access">
-        <div class="weui-panel__hd">文字组合列表</div>
-        <div class="weui-panel__bd">
-            <div class="weui-media-box weui-media-box_text">
-                <h4 class="weui-media-box__title">标题一</h4>
-                <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
-            </div>
-            <div class="weui-media-box weui-media-box_text">
-                <h4 class="weui-media-box__title">标题二</h4>
-                <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
-            </div>
+<div class="page panel js_show">
+
+    <!-- 头 -->
+    <div class="page__hd">
+        <h1 class="page__title">INIT.ME</h1>
+        <p class="page__desc">往事如风，仍要向前</p>
+    </div>
+
+    <!-- 身 -->
+    <div class="page-bd">
+        <div class="weui-flex">
+            <div class="weui-flex__item"><div class="placeholder"></div></div>
+            <div class="weui-flex__item"><div class="placeholder"></div></div>
+            <div class="weui-flex__item"><div class="placeholder">
+                <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default">新增</a>
+            </div></div>
         </div>
-        <div class="weui-panel__ft">
-            <a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link">
-                <div class="weui-cell__bd">查看更多</div>
-                <span class="weui-cell__ft"></span>
-            </a>
+
+        <div class="weui-panel weui-panel_access">
+            <div class="weui-panel__hd">文字组合列表</div>
+
+            <div class="weui-panel__bd" id="list">
+                <!--<a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link">-->
+                    <!--<p class="weui-media-box__desc weui-cell_link">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>-->
+                <!--</a>-->
+                
+            </div>
+            <div class="weui-panel__ft">
+                <a href="javascript:void(0);" onclick="addMore()" class="weui-cell weui-cell_access weui-cell_link">
+                    <div class="weui-cell__bd">查看更多</div>
+                    <span class="weui-cell__ft"></span>
+                </a>
+            </div>
         </div>
     </div>
+
+
+    <!-- 尾 -->
+    <div class="page__ft">
+        
+    </div>
+
 </div>
 
-
 </body>
+
+<script>
+    var url = "http://localhost/wechat/initMe/";
+    
+    var isLast = false;
+    var pageNum = 0;
+    
+    // init 5 条
+    $(function () { 
+        $.ajax({
+            url:url+"0/2?uuid=1234",
+            type:"get",
+            success:function (data) {
+                console.log(data);
+                isLast = data.last;
+                var content = data.content;
+                for (var i= 0; i < content.length; i++){
+                    var qu = content[i];
+                    console.log(qu);
+                    var id = qu.id;
+                    
+                    var text = qu.text;
+                    // href='initMe.html#"+id+"'
+                    // "<a href='javascript:void(0);'
+                    //  onclick=\"addMore("+sid+");\"  设置跳转事件，挺麻烦的 var sid = "\'" + id + "\'";
+                    var str = "<a href='initMe.html#"+id+"' class='weui-cell weui-cell_access weui-cell_link'>\n" +
+                        "<p class='weui-media-box__desc'>"+ text +"</p></a>";
+                    $("#list").append(str);
+                }
+                
+            },
+            error:function (e) {
+                console.log(e);
+                alert(e);
+            }
+        });
+        pageNum++;
+    });
+    
+    var addMore = function () {
+        if (isLast){
+            alert("没有了，就这么多。");
+            return;
+        }
+        $.ajax({
+            url:url+ pageNum+"/2?uuid=1234",
+            type:"get",
+            success:function (data) {
+                console.log(data);
+                isLast = data.last;
+                var content = data.content;
+                for (var i= 0; i < content.length; i++){
+                    var qu = content[i];
+                    console.log(qu);
+                    var id = qu.id;
+                    var text = qu.text;
+                    
+                    var str = "<a href='initMe.html#"+id+"' class='weui-cell weui-cell_access weui-cell_link'>\n" +
+                        "<p class='weui-media-box__desc'>"+ text +"</p></a>";
+                    $("#list").append(str);
+                }
+
+            },
+            error:function (e) {
+                console.log(e);
+                alert(e);
+            }
+        });
+        pageNum++;
+    };
+    
+</script>
+
 </html>
