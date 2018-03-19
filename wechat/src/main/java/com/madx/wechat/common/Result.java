@@ -20,6 +20,11 @@ public class Result {
         result.setMsg("ok");
         return result;
     }
+    
+    public Result data(Object obj){
+        this.setData(obj);
+        return this;
+    }
 
     @Override
     public String toString() {

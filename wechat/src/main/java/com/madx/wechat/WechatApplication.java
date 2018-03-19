@@ -35,7 +35,7 @@ public class WechatApplication implements CommandLineRunner{
 	public void run(String... args) throws Exception {
 		InitQuestionPo initQuestionPo = new InitQuestionPo();
 		initQuestionPo.setText("你好吗？");
-		initQuestionPo.setTheme("hi");
+		initQuestionPo.setIndex(1);
 
 		List<InitQuestionItemPo> items = new ArrayList<>();
 		InitQuestionItemPo itemPo = new InitQuestionItemPo();
@@ -49,8 +49,8 @@ public class WechatApplication implements CommandLineRunner{
 		items.add(itemPo);
 		
 		initQuestionPo.setOptionItems(items);
-		
-//		initQuestionDao.save(initQuestionPo);
+
+		initQuestionPo = initQuestionDao.save(initQuestionPo);
 
 		Gson gson = new Gson();
 		System.out.println(gson.toJson(initQuestionPo));

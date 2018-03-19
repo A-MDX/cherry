@@ -18,14 +18,14 @@ public class InitQuestionPo {
     @GenericGenerator(name="systemUUID",strategy = "uuid")
     private String id;
     
-    // 主题
-    private String theme;
-    
-    // 类型，多选还是多选 1 为单选，其他多选
+    // 类型，多选还是多选 1 为单选，0多选
     @Column
     private int type = 1;
     
     private String text;
+    
+    @Column(name = "z_index")
+    private Integer index;
     
     // 1: 有效， 0：无效
     private Integer status = 1;
@@ -59,12 +59,12 @@ public class InitQuestionPo {
         this.id = id;
     }
 
-    public String getTheme() {
-        return theme;
+    public Integer getIndex() {
+        return index;
     }
 
-    public void setTheme(String theme) {
-        this.theme = theme;
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 
     public int getType() {
