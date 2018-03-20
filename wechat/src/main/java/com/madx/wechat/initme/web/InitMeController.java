@@ -5,6 +5,7 @@ import com.madx.wechat.initme.dao.InitQuestionDao;
 import com.madx.wechat.initme.entity.InitQuestionPo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -39,7 +40,8 @@ public class InitMeController {
     @RequestMapping(value = "{pageNum}/{pageSize}", method = RequestMethod.GET)
     public Object queryPage(HttpServletResponse response, @PathVariable int pageNum, @PathVariable int pageSize
             , String uuid) {
-        return initQuestionDao.findAll(PageRequest.of(pageNum, pageSize));
+        // 根据 index 排序
+        return initQuestionDao.findAll(PageRequest.of(pageNum, pageSize, Sort.by("index")));
     }
 
     @GetMapping("{questionId}")

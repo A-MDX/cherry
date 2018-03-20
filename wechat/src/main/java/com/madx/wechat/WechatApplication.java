@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,10 +52,15 @@ public class WechatApplication implements CommandLineRunner{
 		
 		initQuestionPo.setOptionItems(items);
 
-		initQuestionPo = initQuestionDao.save(initQuestionPo);
+//		initQuestionPo = initQuestionDao.save(initQuestionPo);
 
 		Gson gson = new Gson();
 		System.out.println(gson.toJson(initQuestionPo));
+
+		System.out.println("----------------------------------------------");
+		
+		List<InitQuestionPo> list = initQuestionDao.findByStatus(1, PageRequest.of(0,4, Sort.by("index")));
+		list.forEach(s -> System.out.println(gson.toJson(s)));
 		
 	}
 }

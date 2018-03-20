@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>修改页</title>
+    <title>新建 & 修改</title>
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
     <link rel="stylesheet" href="../css/weui.min.css"/>
     <!--<script src="http://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js">-->
@@ -39,12 +39,12 @@
     <!-- 头 -->
     <div class="page__hd">
         <h1 class="page__title">INIT.ME</h1>
-        <p class="page__desc">往事如风，仍要向前</p>
+        <p class="page__desc">往事随风，砥砺前行</p>
     </div>
 
     <!-- 身 -->
     <div class="page-bd">
-        <div class="weui-cells__title">新建 & 修改</div>
+        <div class="weui-cells__title" id="newOrModify">新建 & 修改</div>
         <div class="weui-cells weui-cells_form">
             <input class="question_column" id="questionId" type="text" name="id" style="display: none"/>
             <div class="weui-cell weui-cell_vcode">
@@ -60,17 +60,17 @@
             </div>
 
             <div class="weui-cell weui-cell_switch">
-                <div class="weui-cell__bd">题目为多选？</div>
+                <div class="weui-cell__bd">题目为单选？</div>
                 <div class="weui-cell__ft">
-                    <input class="weui-switch" type="checkbox" name="type" value="1"/>
+                    <input class="weui-switch" id="checkBox_type" type="checkbox" name="type" checked="checked" value="1"/>
                 </div>
             </div>
 
             <div class="weui-cell weui-cell_switch">
                 <div class="weui-cell__bd">是否有效</div>
                 <div class="weui-cell__ft">
-                    <label for="switchCP" class="weui-switch-cp">
-                        <input id="switchCP" class="weui-switch-cp__input" type="checkbox" checked="checked"
+                    <label for="checkBox_status" class="weui-switch-cp">
+                        <input id="checkBox_status" class="weui-switch-cp__input" type="checkbox" checked="checked"
                                name="status" value="1"/>
                         <div class="weui-switch-cp__box"></div>
                     </label>
@@ -81,7 +81,7 @@
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
-                        <textarea class="weui-textarea question_column" name="text" placeholder="请输入文本" rows="3"></textarea>
+                        <textarea class="weui-textarea question_column" name="text" id="text" placeholder="请输入文本" rows="3"></textarea>
 
                     </div>
                 </div>
@@ -138,6 +138,73 @@
 </div>
 </body>
 <script>
+    
+    // uuid ,用于判断请求合法性
+    
+    $(function () {
+        if (urlObj['questionId'] != null){
+            var questionId = urlObj['questionId'];
+            // 说明有id,走更新路线
+            $('#newOrModify').html("修改...");
+            $('#questionId').val(questionId);
+            
+            // 查出这条数据
+            $.ajax({
+                url:API_URL + questionId + "?uuid="+uuid,
+                type:"get",
+                success:function (data) {
+                    var optionItems = data['optionItems'];
+                    delete data.optionItems;
+                    for (var key in data){
+                        $('#'+key).val(data[key]);
+                    }
+                    
+                    // 不可点击
+                    $('.weui-vcode-btn').prop("disabled", "disabled");
+                    
+                    var status = data['status'];
+                    if (status == 1){
+                        $('#checkBox_status').prop("checked", "checked");
+                    }else {
+                        $('#checkBox_status').prop("checked", "");
+                    }
+                    var type = data['type'];
+                    if (type == 1){
+                        $('#checkBox_type').prop("checked", "checked");
+                    }else {
+                        $('#checkBox_type').prop("checked", "");
+                    }
+                    // init item
+                    if (optionItems == null){
+                        return;
+                    }
+                    questionItemNum = optionItems.length;
+                    
+                    for (var i = 0;i <optionItems.length; i++){
+                        var item = optionItems[i];
+                        var tag = item.tag;
+                        var tagNum = tag.charCodeAt(0) - 65;
+                        var str = '          <div class="weui-cell" id="question_item_' + tagNum + '">\n' +
+                            '                        <div>' + tag + '.&nbsp;</div>\n' +
+                            '                        <div class="weui-cell__bd">\n' +
+                            '                            <input class="weui-input" value="'+ item.text +'" type="text" name="' + tag + '" placeholder="请输入文本"/>\n' +
+                            '                        </div>\n' +
+                            '                </div>';
+                        $('#optionItems').append(str);
+                    }
+                    
+                },
+                error:function (e) {
+                    alert("出错了");
+                    console.log(e);
+                }
+            })
+            
+        }else {
+            $('#newOrModify').html("新增...");
+        }
+    });
+    
     // 获取下一个参数
     var getNextIndex = function () {
         $.ajax({
@@ -208,14 +275,15 @@
         _data['optionItems'] = optionItems;
         
         console.log(_data);
-        return;
+        // return;
         if (_data.id == ""){
             delete _data.id;
             // 新增
             $.ajax({
                 url: API_URL + "?uuid=1234",
                 type: "post",
-                data:_data,
+                data:JSON.stringify(_data),
+                contentType: "application/json; charset=utf-8",
                 dataType:'json',
                 success: function (data) {
                     console.log(data);
@@ -232,7 +300,8 @@
             $.ajax({
                 url: API_URL + id + "?uuid=1234",
                 type: "put",
-                data:_data,
+                data:JSON.stringify(_data),
+                contentType: "application/json;",
                 dataType:'json',
                 success: function (data) {
                     console.log(data);
