@@ -42,7 +42,7 @@
     <!-- 头 -->
     <div class="page__hd">
         <h1 class="page__title">INIT.ME</h1>
-        <p class="page__desc">往事如风，仍要向前</p>
+        <p class="page__desc">往事随风，砥砺前行</p>
     </div>
 
     <!-- 身 -->
@@ -104,12 +104,12 @@
             url: API_URL + "0/2?uuid=" + uuid,
             type: "get",
             success: function (data) {
-                console.log(data);
+                // console.log(data);
                 isLast = data.last;
                 var content = data.content;
                 for (var i = 0; i < content.length; i++) {
                     var qu = content[i];
-                    console.log(qu);
+                    
                     var id = qu.id;
 
                     var text = qu.text;
@@ -119,11 +119,13 @@
                         text += "...";
                     }
                     
+                    var index = qu.index;
+                    
                     // href='initMe.html#"+id+"'
                     // "<a href='javascript:void(0);'
                     //  onclick=\"addMore("+sid+");\"  设置跳转事件，挺麻烦的 var sid = "\'" + id + "\'";
                     var str = "<a href='one.html?questionId=" + id + "&uuid="+uuid+"' class='weui-cell weui-cell_access weui-cell_link'>\n" +
-                        "<p class='weui-media-box__desc'>" + text + "</p></a>";
+                        "<p class='weui-media-box__desc'><span>"+index+". </span>" + text + "</p></a>";
                     $("#list").append(str);
                 }
 
@@ -145,7 +147,7 @@
             url: API_URL + pageNum + "/2?uuid=1234",
             type: "get",
             success: function (data) {
-                console.log(data);
+                
                 isLast = data.last;
                 var content = data.content;
                 for (var i = 0; i < content.length; i++) {
@@ -157,9 +159,9 @@
                         text = text.substr(0,46);
                         text += "...";
                     }
-
+                    var index = qu.index;
                     var str = "<a href='one.html?questionId=" + id + "&uuid="+uuid+"' class='weui-cell weui-cell_access weui-cell_link'>\n" +
-                        "<p class='weui-media-box__desc'>" + text + "</p></a>";
+                        "<p class='weui-media-box__desc'><span>"+index+". </span>" + text + "</p></a>";
                     $("#list").append(str);
                 }
 
