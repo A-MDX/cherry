@@ -2,7 +2,9 @@ package com.madx.wechat.initme.web;
 
 import com.madx.wechat.common.Result;
 import com.madx.wechat.initme.dao.InitQuestionDao;
+import com.madx.wechat.initme.dao.InitYouDao;
 import com.madx.wechat.initme.entity.InitQuestionPo;
+import com.madx.wechat.initme.service.InitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -30,13 +32,35 @@ public class InitMeController {
 
     @Autowired
     private InitQuestionDao initQuestionDao;
-
+    @Autowired
+    private InitYouDao initYouDao;
+    @Autowired
+    private InitService initService;
+    
+    // 设置昵称与传递第一题
+    @GetMapping("bindYou")
+    public Object bindYou(@RequestParam String name, String uuid){
+        //todo
+        
+        return initQuestionDao.findByStatusAndIndex(1, 1);
+    }
+    @GetMapping("checkYou")
+    public Object checkYou(@RequestParam String uuid){
+        //todo
+        return null;
+    }
+    @PostMapping("answer")
+    public Object answerMe(@RequestBody Map<String, Object> answer, String uuid){
+        //todo
+        return null;
+    }
+    
     // 寻找下一个最大的下标
     @GetMapping("nextIndex")
     public Object nextIndex() {
         return Result.instance().data(initQuestionDao.findMaxIndex() + 1);
     }
-
+    
     @RequestMapping(value = "{pageNum}/{pageSize}", method = RequestMethod.GET)
     public Object queryPage(HttpServletResponse response, @PathVariable int pageNum, @PathVariable int pageSize
             , String uuid) {

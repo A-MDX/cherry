@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -59,7 +60,7 @@ public class WechatApplication implements CommandLineRunner{
 
 		System.out.println("----------------------------------------------");
 		
-		List<InitQuestionPo> list = initQuestionDao.findByStatus(1, PageRequest.of(0,4, Sort.by("index")));
+		Page<InitQuestionPo> list = initQuestionDao.findByStatus(1, PageRequest.of(0,4, Sort.by("index")));
 		list.forEach(s -> System.out.println(gson.toJson(s)));
 		
 	}

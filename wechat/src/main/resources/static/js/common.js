@@ -21,5 +21,5 @@ var uuid;
 var urlObj = getUrlObj();
 uuid = urlObj['uuid'];
 
-console.log(urlObj);
+// console.log(urlObj);
 

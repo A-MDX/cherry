@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
  * Create by A-mdx at 2018-03-18 13:11
  */
 @Service
-public class InitQuestionService {
+public class InitService {
     
     @Autowired
     private InitQuestionDao initQuestionDao;
