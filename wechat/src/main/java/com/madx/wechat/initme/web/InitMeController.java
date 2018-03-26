@@ -37,6 +37,11 @@ public class InitMeController {
     @Autowired
     private InitService initService;
     
+    @GetMapping("findByIndex")
+    public Object findByIndex(@RequestParam int index, String uuid){
+        return initQuestionDao.findByStatusAndIndex(1, index);
+    }
+    
     // 设置昵称与传递第一题
     @GetMapping("bindYou")
     public Object bindYou(@RequestParam String name, String uuid){
@@ -51,7 +56,8 @@ public class InitMeController {
     }
     @PostMapping("answer")
     public Object answerMe(@RequestBody Map<String, Object> answer, String uuid){
-        //todo
+        System.out.println("answer");
+        System.out.println(answer);
         return null;
     }
     

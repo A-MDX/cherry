@@ -162,70 +162,18 @@
             type: "get",
             success: function (data) {
                 $('#homePage').empty();
-                // 增加两个div 层
+                // 增加两个 div 层
                 $('#homePage').append('<div id="questionDiv"></div><div id="submitDiv"></div>');
 
                 questionObj = data;
                 console.log(data);
                 // 第一次返回第一题
-                var str = '<article class="weui-article" id="' + data.id + '">\n' +
-                    '        <section>\n' +
-                    '            <h2 class="title">No. <span id="index_num">' + data.index + '</span></h2>\n' +
-                    '            <section>\n' +
-                    '                <p>\n'
-                    + data.text +
-                    '                </p>\n' +
-                    '                <p style="font-size: 14px;color: #aaaaaa;text-align: right">创建时间：\n'
-                    + data.createTime +
-                    '                </p>\n' +
-                    '            </section>\n' +
-                    '        </section>\n' +
-                    '    </article>';
-                var type = data.type;
-                var optionItems = data.optionItems;
-
-                if (type == 1) {
-                    // 单选
-                    str += '<div class="weui-cells__title">单选题</div>';
-                    str += '<div class="weui-cells weui-cells_radio">';
-                    for (var i = 0; i < optionItems.length; i++) {
-                        var item = optionItems[i];
-                        str += '<label class="weui-cell weui-check__label" for="x' + i + '">\n' +
-                            '            <div class="weui-cell__bd">\n' +
-                            '                <p>' + item.text + '</p>\n' +
-                            '            </div>\n' +
-                            '            <div class="weui-cell__ft">\n' +
-                            '                <input type="radio" class="weui-check" id="x' + i + '" name="singleSelect" value="' + item.tag + '"/>\n' +
-                            '                <span class="weui-icon-checked"></span>\n' +
-                            '            </div>\n' +
-                            '        </label>';
-                    }
-                    str += '</div>';
-                } else {
-                    // 多选
-                    str += '<div class="weui-cells__title">多选题</div>';
-                    str += '<div class="weui-cells weui-cells_checkbox">';
-                    for (var i = 0; i < optionItems.length; i++) {
-                        var item = optionItems[i];
-                        str += '<label class="weui-cell weui-check__label" for="s11">\n' +
-                            '            <div class="weui-cell__hd">\n' +
-                            '                <input type="checkbox" class="weui-check" name="checkbox1" id="s11" value="' + item.tag + '"/>\n' +
-                            '                <i class="weui-icon-checked"></i>\n' +
-                            '            </div>\n' +
-                            '            <div class="weui-cell__bd">\n' +
-                            '                <p>' + item.text + '</p>\n' +
-                            '            </div>\n' +
-                            '        </label>';
-                    }
-                    str += '</div>';
-                }
-
-                $('#questionDiv').append(str);
+                initQuestionView(data);
 
                 // init 提交按钮
-                str = '<br><div >\n' +
-                    '        <span style="width: 30%;float: left"><a href="javascript:;" class="weui-btn weui-btn_default">选择题号</a></span>\n' +
-                    '        <span style="width: 70%;float: left"><a href="javascript:;" class="weui-btn weui-btn_primary">确认</a></span>\n' +
+                var str = '<br><div >\n' +
+                    '        <span style="width: 30%;float: left"><a href="javascript:;" onclick="chooseQuestionNum()" class="weui-btn weui-btn_default">选择题号</a></span>\n' +
+                    '        <span style="width: 70%;float: left"><a href="javascript:;" onclick="submitQuestion()" class="weui-btn weui-btn_primary">确认</a></span>\n' +
                     '    </div>';
                 $('#submitDiv').append(str);
             },
@@ -235,6 +183,141 @@
             }
         })
     }
+
+    // 选择题号，直接跳转
+    var chooseQuestionNum = function () {
+        var num = prompt("输入想要跳到的题目", "");
+        // 进入跳转
+        if (num == null || num == '') {
+            return;
+        }
+        num = parseInt(num);
+        $.ajax({
+            url: API_URL + "findByIndex?uuid=" + uuid + "&index=" + num,
+            type: "get",
+            success: function (data) {
+                initQuestionView(data);
+            },
+            error: function (e) {
+                console.log(e);
+                alert("出错了");
+            }
+        })
+    }
+
+    // 初始化题目
+    var initQuestionView = function (data) {
+        $('#questionDiv').empty();
+
+        var str = '<article class="weui-article" id="' + data.id + '">\n' +
+            '        <section>\n' +
+            '            <h2 class="title">No. <span id="index_num">' + data.index + '</span></h2>\n' +
+            '            <section>\n' +
+            '                <p>\n'
+            + data.text +
+            '                </p>\n' +
+            '                <p style="font-size: 14px;color: #aaaaaa;text-align: right">创建时间：\n'
+            + data.createTime +
+            '                </p>\n' +
+            '            </section>\n' +
+            '        </section>\n' +
+            '    </article>';
+        var type = data.type;
+        var optionItems = data.optionItems;
+
+        if (type == 1) {
+            // 单选
+            str += '<div class="weui-cells__title">单选题</div>';
+            str += '<div class="weui-cells weui-cells_radio">';
+            for (var i = 0; i < optionItems.length; i++) {
+                var item = optionItems[i];
+                str += '<label class="weui-cell weui-check__label" for="x' + i + '">\n' +
+                    '            <div class="weui-cell__bd">\n' +
+                    '                <p>' + item.text + '</p>\n' +
+                    '            </div>\n' +
+                    '            <div class="weui-cell__ft">\n' +
+                    '                <input type="radio" class="weui-check" id="x' + i + '" name="singleSelect" value="' + item.tag + '"/>\n' +
+                    '                <span class="weui-icon-checked"></span>\n' +
+                    '            </div>\n' +
+                    '        </label>';
+            }
+            str += '</div>';
+        } else {
+            // 多选
+            str += '<div class="weui-cells__title">多选题</div>';
+            str += '<div class="weui-cells weui-cells_checkbox">';
+            for (var i = 0; i < optionItems.length; i++) {
+                var item = optionItems[i];
+                str += '<label class="weui-cell weui-check__label" for="s1' + i + '">\n' +
+                    '            <div class="weui-cell__hd">\n' +
+                    '                <input type="checkbox" class="weui-check" name="checkbox1" id="s1' + i + '" value="' + item.tag + '"/>\n' +
+                    '                <i class="weui-icon-checked"></i>\n' +
+                    '            </div>\n' +
+                    '            <div class="weui-cell__bd">\n' +
+                    '                <p>' + item.text + '</p>\n' +
+                    '            </div>\n' +
+                    '        </label>';
+            }
+            str += '</div>';
+        }
+
+        $('#questionDiv').append(str);
+    }
+
+    var submitQuestion = function () {
+        var type = questionObj.type;
+        var index = questionObj.index;
+        var id = questionObj.id;
+        var json = {};
+        json.type = type;
+        json.id = id;
+        json.index = index;
+        
+        var answer = ''; 
+        if (type == 1){
+            // 单选
+            $('input[type="radio"][name="singleSelect"]').each(function(){
+                if(this.checked){
+                    answer = $(this).val();
+                }
+            });
+        }else {
+            // 多选
+            $('input[type="checkbox"][name="checkbox1"]').each(function(){
+                if(this.checked){
+                    if (answer.length > 0){
+                        answer += " , " + $(this).val() ;
+                    }else {
+                        answer += $(this).val();
+                    }
+                }
+            });
+        }
+        if (answer == ''){
+            // ...未选择
+            alert("需要选择，要不直接选别的题。");
+        }
+        
+        json.answer = answer;
+
+        $.ajax({
+            url: API_URL + "answer?uuid="+uuid,
+            type: "post",
+            data: JSON.stringify(json),
+            contentType: "application/json; charset=utf-8",
+            dataType:'json',
+            success:function (data) {
+                // 这是下一题。。
+                // todo
+            },
+            error: function (e) {
+                alert(e);
+                console.log(e);
+            }
+            
+        });
+    }
+
 
 </script>
 </html>
