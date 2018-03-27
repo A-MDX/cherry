@@ -14,7 +14,7 @@ public class InitAnswerPo {
 
     @Id
     @GeneratedValue(generator = "systemUUID")
-    @GenericGenerator(name="systemUUID",strategy = "uuid")
+    @GenericGenerator(name = "systemUUID", strategy = "uuid")
     private String id;
 
     private String answer;

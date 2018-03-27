@@ -1,6 +1,7 @@
 package com.madx.wechat.initme.web;
 
 import com.madx.wechat.common.Result;
+import com.madx.wechat.common.YuanZu;
 import com.madx.wechat.initme.dao.InitQuestionDao;
 import com.madx.wechat.initme.dao.InitYouDao;
 import com.madx.wechat.initme.entity.InitQuestionPo;
@@ -39,26 +40,22 @@ public class InitMeController {
     
     @GetMapping("findByIndex")
     public Object findByIndex(@RequestParam int index, String uuid){
+        initService.checkUuid(uuid);
         return initQuestionDao.findByStatusAndIndex(1, index);
     }
     
     // 设置昵称与传递第一题
     @GetMapping("bindYou")
-    public Object bindYou(@RequestParam String name, String uuid){
-        //todo
-        
-        return initQuestionDao.findByStatusAndIndex(1, 1);
+    public Object bindYou(@RequestParam String name){
+        String uuid = initService.bindYou(name);
+        InitQuestionPo questionPo = initQuestionDao.findByStatusAndIndex(1, 1);
+        return YuanZu.init(uuid, questionPo);
     }
-    @GetMapping("checkYou")
-    public Object checkYou(@RequestParam String uuid){
-        //todo
-        return null;
-    }
+    
+    // 自动下一题
     @PostMapping("answer")
-    public Object answerMe(@RequestBody Map<String, Object> answer, String uuid){
-        System.out.println("answer");
-        System.out.println(answer);
-        return null;
+    public InitQuestionPo answerMe(@RequestBody Map<String, Object> answer, String uuid){
+        return initService.answerMe(uuid, answer);
     }
     
     // 寻找下一个最大的下标

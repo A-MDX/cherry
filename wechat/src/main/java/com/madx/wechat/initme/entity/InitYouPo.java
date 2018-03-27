@@ -1,8 +1,8 @@
 package com.madx.wechat.initme.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -13,18 +13,22 @@ import java.util.Date;
 public class InitYouPo {
 
     @Id
-    private String openId;
+    @GeneratedValue(generator = "systemUUID")
+    @GenericGenerator(name="systemUUID",strategy = "uuid")
+    private String id;
     
+    // 唯一
+    @Column(unique = true)
     private String name;
 
     private Date createTime = new Date();
 
-    public String getOpenId() {
-        return openId;
+    public String getId() {
+        return id;
     }
 
-    public void setOpenId(String openId) {
-        this.openId = openId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {

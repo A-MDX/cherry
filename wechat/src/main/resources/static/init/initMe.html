@@ -125,24 +125,6 @@
 </div>
 </body>
 <script>
-    // 初始化显示昵称
-    $(function () {
-        $.ajax({
-            url: API_URL + "checkYou?uuid=" + uuid,
-            type: "get",
-            success: function (data) {
-                data = data.data;
-                if (data != null) {
-                    $('#span_nickname').html(data);
-                    $('#you_nickname').val(data);
-                }
-            },
-            error: function (e) {
-                console.log(e);
-                alert("出错了");
-            }
-        })
-    });
 
     // 设置题为全局变量
     var questionObj;
@@ -158,13 +140,17 @@
         $('#span_nickname').html(you_nickname);
 
         $.ajax({
-            url: API_URL + "bindYou?uuid=" + uuid + "&name=" + you_nickname,
+            url: API_URL + "bindYou?&name=" + you_nickname,
             type: "get",
             success: function (data) {
                 $('#homePage').empty();
                 // 增加两个 div 层
                 $('#homePage').append('<div id="questionDiv"></div><div id="submitDiv"></div>');
 
+                // data 是一个元组
+                uuid = data['a'];
+                data = data['b'];
+                
                 questionObj = data;
                 console.log(data);
                 // 第一次返回第一题
@@ -197,6 +183,7 @@
             type: "get",
             success: function (data) {
                 initQuestionView(data);
+                questionObj = data;
             },
             error: function (e) {
                 console.log(e);
@@ -254,7 +241,7 @@
                     '                <i class="weui-icon-checked"></i>\n' +
                     '            </div>\n' +
                     '            <div class="weui-cell__bd">\n' +
-                    '                <p>' + item.text + '</p>\n' +
+                    '                <p>' + item.tag +'. '+ item.text + '</p>\n' +
                     '            </div>\n' +
                     '        </label>';
             }
@@ -308,7 +295,8 @@
             dataType:'json',
             success:function (data) {
                 // 这是下一题。。
-                // todo
+                initQuestionView(data);
+                questionObj = data;
             },
             error: function (e) {
                 alert(e);
