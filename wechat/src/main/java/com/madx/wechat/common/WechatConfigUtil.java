@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -30,10 +30,12 @@ public class WechatConfigUtil {
     private String appID;
     private String appsecret;
     private String url;
+    private String adminOpenid;
+    private String bindUrl;
 
     private static final String getAccessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
     private static final String redisPrefix = "wechat.";
-    
+    private static final String SEND_MESSAGE_URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=";
     
 
     @Autowired
@@ -41,6 +43,36 @@ public class WechatConfigUtil {
 
     private Gson gson = new Gson();
 
+    public String sendWechatMsg(String json){
+        String resultStr = null;
+        String accessToken = getAccessToken();
+        try {
+            URL realUrl = new URL(SEND_MESSAGE_URL+accessToken);
+            HttpURLConnection connection = (HttpURLConnection) realUrl.openConnection();
+
+            // 必须设置
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
+            connection.connect();
+            try (PrintWriter out = new PrintWriter(connection.getOutputStream())){
+                out.print(json);
+                out.flush();
+            }
+            StringBuilder result = new StringBuilder();
+            try(BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))){
+                String temp;
+                while ((temp = in.readLine()) != null){
+                    result.append(temp);
+                }
+            }
+            resultStr = result.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error("发消息失败了。", e);
+        }
+        return resultStr;
+    }
 
     /**
      * 生成 accessToken
@@ -108,8 +140,24 @@ public class WechatConfigUtil {
         System.out.println(json);
     }
 
+    public String getAdminOpenid() {
+        return adminOpenid;
+    }
+
+    public void setAdminOpenid(String adminOpenid) {
+        this.adminOpenid = adminOpenid;
+    }
+
     public String getUrl() {
         return url;
+    }
+
+    public String getBindUrl() {
+        return bindUrl;
+    }
+
+    public void setBindUrl(String bindUrl) {
+        this.bindUrl = bindUrl;
     }
 
     public void setUrl(String url) {

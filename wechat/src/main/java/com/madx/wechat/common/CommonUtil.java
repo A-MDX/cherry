@@ -19,8 +19,8 @@ public class CommonUtil {
     public static Gson gson = new Gson();
     
     // 默认时间格式
-    private static SimpleDateFormat defaultSdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-
+    private static SimpleDateFormat defaultSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    
     /**
      * 转换时间 -> str
      * @param date

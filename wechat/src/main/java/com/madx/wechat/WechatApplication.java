@@ -12,11 +12,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
+@EnableAsync
 public class WechatApplication implements CommandLineRunner{
 
 	public static void main(String[] args) {
@@ -37,7 +39,7 @@ public class WechatApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		InitQuestionPo initQuestionPo = new InitQuestionPo();
-		initQuestionPo.setText("你好吗？");
+		initQuestionPo.setText("你好吗？我不骗你");
 		initQuestionPo.setIndex(1);
 
 		List<InitQuestionItemPo> items = new ArrayList<>();

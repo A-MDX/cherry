@@ -18,4 +18,6 @@ public interface InitQuestionDao extends JpaRepository<InitQuestionPo, String> {
     
     InitQuestionPo findByStatusAndIndex(Integer status, Integer index);
     
+    @Query("select count(*) from InitQuestionPo p where p.status = 1")
+    Integer findCount();
 }

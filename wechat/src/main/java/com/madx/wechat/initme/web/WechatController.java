@@ -2,6 +2,8 @@ package com.madx.wechat.initme.web;
 
 import com.madx.wechat.common.WechatConfigUtil;
 import com.madx.wechat.common.XmlMsg;
+import com.madx.wechat.initme.service.InitService;
+import com.madx.wechat.initme.service.WechatService;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
@@ -31,6 +33,10 @@ public class WechatController {
 
     @Autowired
     private WechatConfigUtil wechatConfigUtil;
+    @Autowired
+    private InitService initService;
+    @Autowired
+    private WechatService wechatService;
 
     /**
      * 微信核心服务，全靠这里处理消息
@@ -64,9 +70,7 @@ public class WechatController {
             return null;
         }
 
-//        String returnStr = wechatService.distributeMsg(msg);
-
-        String returnStr = "123333333";
+        String returnStr = wechatService.distributeMsg(msg);
 
         System.out.println("response :\n" + returnStr);
         response.setContentType("text/html");

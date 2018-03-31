@@ -5,9 +5,9 @@
     <title>新建 & 修改</title>
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
     <link rel="stylesheet" href="../css/weui.min.css"/>
-    <!--<script src="http://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js">-->
-    <!--</script>-->
-    <script src="../js/jquery-1.11.2.js"></script>
+    <script src="http://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js">
+    </script>
+    <!--<script src="../js/jquery-1.11.2.js"></script>-->
 
     <script src="../js/common.js"></script>
     <style>
@@ -62,7 +62,8 @@
             <div class="weui-cell weui-cell_switch">
                 <div class="weui-cell__bd">题目为单选？</div>
                 <div class="weui-cell__ft">
-                    <input class="weui-switch" id="checkBox_type" type="checkbox" name="type" checked="checked" value="1"/>
+                    <input class="weui-switch" id="checkBox_type" type="checkbox" name="type" checked="checked"
+                           value="1"/>
                 </div>
             </div>
 
@@ -81,7 +82,8 @@
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
-                        <textarea class="weui-textarea question_column" name="text" id="text" placeholder="请输入文本" rows="3"></textarea>
+                        <textarea class="weui-textarea question_column" name="text" id="text" placeholder="请输入文本"
+                                  rows="3"></textarea>
 
                     </div>
                 </div>
@@ -129,6 +131,9 @@
 
 
     </div>
+
+    <div id="beforeAnswerDiv"></div>
+
     <!-- 尾 -->
     <div class="page__ft">
         <div class="weui-loadmore weui-loadmore_line weui-loadmore_dot">
@@ -138,77 +143,103 @@
 </div>
 </body>
 <script>
-    
+
     // uuid ,用于判断请求合法性
-    
+
     $(function () {
-        if (urlObj['questionId'] != null){
+        if (urlObj['questionId'] != null) {
             var questionId = urlObj['questionId'];
             // 说明有id,走更新路线
             $('#newOrModify').html("修改...");
             $('#questionId').val(questionId);
-            
+
             // 查出这条数据
             $.ajax({
-                url:API_URL + questionId + "?uuid="+uuid,
-                type:"get",
-                success:function (data) {
+                url: API_URL + questionId + "?uuid=" + uuid,
+                type: "get",
+                success: function (data) {
                     var optionItems = data['optionItems'];
                     delete data.optionItems;
-                    for (var key in data){
-                        $('#'+key).val(data[key]);
+                    for (var key in data) {
+                        $('#' + key).val(data[key]);
                     }
-                    
+
                     // 不可点击
                     $('.weui-vcode-btn').prop("disabled", "disabled");
-                    
+
                     var status = data['status'];
-                    if (status == 1){
+                    if (status == 1) {
                         $('#checkBox_status').prop("checked", "checked");
-                    }else {
+                    } else {
                         $('#checkBox_status').prop("checked", "");
                     }
                     var type = data['type'];
-                    if (type == 1){
+                    if (type == 1) {
                         $('#checkBox_type').prop("checked", "checked");
-                    }else {
+                    } else {
                         $('#checkBox_type').prop("checked", "");
                     }
                     // init item
-                    if (optionItems == null){
+                    if (optionItems == null) {
                         return;
                     }
                     questionItemNum = optionItems.length;
-                    
-                    for (var i = 0;i <optionItems.length; i++){
+
+                    for (var i = 0; i < optionItems.length; i++) {
                         var item = optionItems[i];
                         var tag = item.tag;
                         var tagNum = tag.charCodeAt(0) - 65;
                         var str = '          <div class="weui-cell" id="question_item_' + tagNum + '">\n' +
                             '                        <div>' + tag + '.&nbsp;</div>\n' +
                             '                        <div class="weui-cell__bd">\n' +
-                            '                            <input class="weui-input" value="'+ item.text +'" type="text" name="' + tag + '" placeholder="请输入文本"/>\n' +
+                            '                            <input class="weui-input" value="' + item.text + '" type="text" name="' + tag + '" placeholder="请输入文本"/>\n' +
                             '                        </div>\n' +
                             '                </div>';
                         $('#optionItems').append(str);
                     }
-                    
+
+                    // init 答案
+                    $.ajax({
+                        url: API_URL + "findAnswerByIndex?uuid=" + uuid + "&index=" + data.index,
+                        success: function (data) {
+                            console.log(data);
+                            data = data.data;
+                            if (data == null || data.length == 0) {
+                                return;
+                            }
+
+                            var str = '<p style="margin-top: 6px"></p><hr/><h4>&nbsp;&nbsp;选择...</h4>';
+                            for (var i = 0; i < data.length; i++) {
+                                var item = data[i];
+                                str += '<p style="text-align: center"> <span>&nbsp;&nbsp;' + item[2] + '</span><span>&nbsp;&nbsp;&nbsp;&nbsp;' + item[0] + '</span>' +
+                                    '<span style="font-size: 14px;color: #aaaaaa;text-align: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + item[1] + '</span></p>';
+                            }
+                            $('#beforeAnswerDiv').append(str);
+
+
+                        },
+                        error: function (e) {
+                            alert(e);
+                            console.log(e);
+                        }
+                    });
+
                 },
-                error:function (e) {
+                error: function (e) {
                     alert("出错了");
                     console.log(e);
                 }
             })
-            
-        }else {
+
+        } else {
             $('#newOrModify').html("新增...");
         }
     });
-    
+
     // 获取下一个参数
     var getNextIndex = function () {
         $.ajax({
-            url: API_URL + "nextIndex?uuid=1234",
+            url: API_URL + "nextIndex?uuid=" + uuid,
             type: "get",
             success: function (data) {
                 $("#index").val(data.data);
@@ -242,7 +273,7 @@
         $('#optionItems').append(str);
         questionItemNum++;
     }
-    
+
     // submit 
     var submitQuestion = function () {
         var _data = {};
@@ -254,14 +285,14 @@
         });
         // checkbox 
         // $('input[type="checkbox"][checked="checked"]').each(function() {
-        $('input[type="checkbox"]').each(function() {
+        $('input[type="checkbox"]').each(function () {
             var key = $(this).prop('name');
             var val = 0;
-            if(this.checked) {
+            if (this.checked) {
                 val = $(this).val();
             }
             _data[key] = val;
-            
+
         });
         // itemOptions
         var optionItems = [];
@@ -273,18 +304,19 @@
             optionItems.push(item);
         });
         _data['optionItems'] = optionItems;
-        
+
         console.log(_data);
+
         // return;
-        if (_data.id == ""){
+        if (_data.id == "") {
             delete _data.id;
             // 新增
             $.ajax({
-                url: API_URL + "?uuid=1234",
+                url: API_URL + "?uuid=" + uuid,
                 type: "post",
-                data:JSON.stringify(_data),
+                data: JSON.stringify(_data),
                 contentType: "application/json; charset=utf-8",
-                dataType:'json',
+                dataType: 'json',
                 success: function (data) {
                     console.log(data);
                     alert("成功");
@@ -294,15 +326,15 @@
                     console.log(e);
                 }
             });
-        }else {
+        } else {
             var id = _data.id;
             // 更新
             $.ajax({
-                url: API_URL + id + "?uuid=1234",
+                url: API_URL + id + "?uuid=" + uuid,
                 type: "put",
-                data:JSON.stringify(_data),
+                data: JSON.stringify(_data),
                 contentType: "application/json;",
-                dataType:'json',
+                dataType: 'json',
                 success: function (data) {
                     console.log(data);
                     alert("成功");

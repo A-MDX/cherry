@@ -26,7 +26,7 @@ public class InitAnswerPo {
     @JoinColumn(name = "question_id")
     private InitQuestionPo initQuestionPo;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "you_id")
     private InitYouPo initYouPo;
 

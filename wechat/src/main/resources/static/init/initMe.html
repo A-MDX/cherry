@@ -11,9 +11,9 @@
 
     <link rel="stylesheet" href="../css/weui.min.css"/>
 
-    <!--<script src="http://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js">-->
-    <!--</script>-->
-    <script src="../js/jquery-1.11.2.js"></script>
+    <script src="http://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js">
+    </script>
+    <!--<script src="../js/jquery-1.11.2.js"></script>-->
 
 
     <script src="../js/common.js"></script>
@@ -145,7 +145,7 @@
             success: function (data) {
                 $('#homePage').empty();
                 // 增加两个 div 层
-                $('#homePage').append('<div id="questionDiv"></div><div id="submitDiv"></div>');
+                $('#homePage').append('<div id="questionDiv"></div><div id="submitDiv"></div><div id="beforeAnswerDiv"></div>');
 
                 // data 是一个元组
                 uuid = data['a'];
@@ -168,11 +168,24 @@
                 alert("出错了");
             }
         })
+
+        // 初始化题的数目？
+        $.ajax({
+            url:API_URL+"queryQuesNum",
+            success:function (data) {
+                if (data.data != null){
+                    quesNum = data.data;
+                }
+            },error:function (e) {
+                console.log(e);
+                alert("刷新？");
+            }
+        });
     }
 
     // 选择题号，直接跳转
     var chooseQuestionNum = function () {
-        var num = prompt("输入想要跳到的题目", "");
+        var num = prompt("输入想要跳到的题目(总共 " + quesNum+" 道)", "");
         // 进入跳转
         if (num == null || num == '') {
             return;
@@ -182,20 +195,31 @@
             url: API_URL + "findByIndex?uuid=" + uuid + "&index=" + num,
             type: "get",
             success: function (data) {
-                initQuestionView(data);
+                data = data.data;
+                if (data == null){
+                    alert("似乎没有这一题。");
+                    return;
+                }
                 questionObj = data;
+                initQuestionView(data);
             },
             error: function (e) {
                 console.log(e);
                 alert("出错了");
             }
         })
-    }
+    };
 
     // 初始化题目
     var initQuestionView = function (data) {
         $('#questionDiv').empty();
+        $('#beforeAnswerDiv').empty();
 
+        // 处理换行问题
+        var text = data.text;
+        text = text.replace(/\n/g, '<br>');
+        data.text = text;
+        
         var str = '<article class="weui-article" id="' + data.id + '">\n' +
             '        <section>\n' +
             '            <h2 class="title">No. <span id="index_num">' + data.index + '</span></h2>\n' +
@@ -220,7 +244,7 @@
                 var item = optionItems[i];
                 str += '<label class="weui-cell weui-check__label" for="x' + i + '">\n' +
                     '            <div class="weui-cell__bd">\n' +
-                    '                <p>' + item.text + '</p>\n' +
+                    '                <p>'+ item.tag +'. ' + item.text + '</p>\n' +
                     '            </div>\n' +
                     '            <div class="weui-cell__ft">\n' +
                     '                <input type="radio" class="weui-check" id="x' + i + '" name="singleSelect" value="' + item.tag + '"/>\n' +
@@ -249,7 +273,14 @@
         }
 
         $('#questionDiv').append(str);
-    }
+
+        // 查询曾经的答案。。
+        queryBeforeAnswer(data.index);
+        
+    };
+    
+    var quesNum = 0;
+    
 
     var submitQuestion = function () {
         var type = questionObj.type;
@@ -294,15 +325,47 @@
             contentType: "application/json; charset=utf-8",
             dataType:'json',
             success:function (data) {
+                data = data.data;
+                if (data == null){
+                    alert("题目全部做完了，就这些。");
+                    return;
+                }
                 // 这是下一题。。
-                initQuestionView(data);
                 questionObj = data;
+                initQuestionView(data);
             },
             error: function (e) {
                 alert(e);
                 console.log(e);
             }
             
+        });
+    }
+    
+    // 查询以前的答案。
+    var queryBeforeAnswer = function (index) {
+
+        $.ajax({
+            url: API_URL + "queryYouAnswer?uuid="+uuid+"&index="+index,
+            type: "get",
+            dataType:'json',
+            success:function (data) {
+                console.log(data);
+                data = data.data;
+                if (data == null || data.length == 0){
+                    return;
+                }
+                var str = '<p style="margin-top: 6px"></p><hr/><h4>以往选择</h4>';
+                for(var i = 0; i< data.length;i++){
+                    var item = data[i];
+                    str += '<p style="text-align: center"> <span>&nbsp;&nbsp;'+item[0]+'</span><span style="font-size: 14px;color: #aaaaaa;text-align: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+item[1]+'</span></p>';
+                }
+                $('#beforeAnswerDiv').append(str);
+            },
+            error: function (e) {
+                console.log(e);
+            }
+
         });
     }
 

@@ -6,6 +6,7 @@ wechat:
   #  这个是绑定微信服务器的地址api
   bindAPI: server
   bindUrl: http://madx.free.ngrok.cc/wechat/
+  adminOpenid: oEYIP0wamw-fSnN103-JYGN5eHq8
 ---
 server:
   port: 80
@@ -38,3 +39,7 @@ spring:
     host: localhost
     port: 6379
 
+---
+msg:
+  dailyImage:
+    default: http://39.108.79.64/image/default.jpg
